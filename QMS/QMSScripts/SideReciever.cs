@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace QSim.Scripts;
+namespace QMS.QMSScripts;
 
 public class MessageObject
 {
