@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 
-namespace QSim.Scripts
+namespace QMS.QMSScripts
 {
     /// <summary>
     /// Use to establish connection with specific user.

@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace QSim.Scripts
+namespace QMS.QMSScripts
 {
     public class LoginFunctions
     {

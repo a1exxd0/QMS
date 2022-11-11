@@ -1,4 +1,4 @@
-﻿namespace QSim.Scripts
+﻿namespace QMS.QMSScripts
 {
     //Newtonsoft.Json
     //System.Data.SQL

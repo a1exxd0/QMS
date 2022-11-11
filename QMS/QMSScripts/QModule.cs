@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-namespace QSim.Scripts
+namespace QMS.QMSScripts
 {
     #region Complex
     /// <summary>

@@ -41,10 +41,10 @@ namespace QSim.Scripts
     }
     public class SideReciever
     {
-        public static Queue<int> messageIDQueue = new Queue<int>();
-        public static List<MessageObject> messageObjectList = new List<MessageObject>();
-        public static List<SenderCharacters> SenderCharactersList = new List<SenderCharacters>();
-        public static List<SenderQubits> SenderQubitsList = new List<SenderQubits>();
+        public static Queue<int> messageIDQueue = new();
+        public static List<MessageObject> messageObjectList = new();
+        public static List<SenderCharacters> SenderCharactersList = new();
+        public static List<SenderQubits> SenderQubitsList = new();
 
         
     }
