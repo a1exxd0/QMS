@@ -16,7 +16,7 @@ public class LoginFunctions
     /// <returns></returns>
     public static bool ValidationASII(string inputted) //takes string input and returns t/f based on if all characters are in ASCII set
     {
-        foreach (char c in inputted) //loops through each character in string
+        foreach (var c in inputted) //loops through each character in string
         {
             if (!(c < 128 && c > 31)) //values >= 128 are not ASCII and values < 32 are control characters
             {
@@ -234,21 +234,17 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-        {
-            connection.Open();
+        using SqlConnection connection = new SqlConnection(builder.ConnectionString);
+        connection.Open();
 
-            String query = $"INSERT INTO LoginAttemptInfo(UserID, AttemptDateTime, AttemptSuccessful) VALUES (@user, @datetime, @success)"; //query
+        var query = $"INSERT INTO LoginAttemptInfo(UserID, AttemptDateTime, AttemptSuccessful) VALUES (@user, @datetime, @success)"; //query
 
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@user", UserID); //adds parameters to the command to be executed
-                command.Parameters.AddWithValue("@datetime", AttemptDateTime);
-                command.Parameters.AddWithValue("@success", AttemptSuccessful);
+        using SqlCommand command = new SqlCommand(query, connection);
+        command.Parameters.AddWithValue("@user", UserID); //adds parameters to the command to be executed
+        command.Parameters.AddWithValue("@datetime", AttemptDateTime);
+        command.Parameters.AddWithValue("@success", AttemptSuccessful);
 
-                command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
-            }
-        }
+        command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
     }
     /// <summary>
     /// Gets most recent consecutive wrong attempts for a user

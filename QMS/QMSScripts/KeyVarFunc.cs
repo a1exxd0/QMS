@@ -8,8 +8,8 @@ public class KeyVarFunc
 
     public static string Username
     {
-        get { return username; }
-        set { username = value; }
+        get => username;
+        set => username = value;
     }
 }
 
