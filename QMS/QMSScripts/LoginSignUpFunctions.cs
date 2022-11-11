@@ -6,10 +6,7 @@ namespace QMS.QMSScripts
 {
     public class LoginFunctions
     {
-        #region Constants
-        internal static string dataSource = "AlexLaptop";
-        internal static string initialCatalog = "LoginAndAccessInfo";
-        #endregion
+        
 
         #region Modular Functions
         /// <summary>
@@ -70,10 +67,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "Entry";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -107,10 +104,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "Entry";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -165,10 +162,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "AddUser";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -195,10 +192,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "DeleteUser";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -231,10 +228,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "AddUser";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -263,10 +260,10 @@ namespace QMS.QMSScripts
             int Consecutives = 0;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "Entry";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -304,10 +301,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "Entry";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -333,10 +330,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "Entry";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
 
             using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
@@ -429,10 +426,10 @@ namespace QMS.QMSScripts
         {
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-            builder.DataSource = dataSource; //database login information
+            builder.DataSource = DatabaseOptions.dataSource; //database login information
             builder.UserID = "DeleteUser";
             builder.Password = "password";
-            builder.InitialCatalog = initialCatalog;
+            builder.InitialCatalog = DatabaseOptions.initialCatalog;
             builder.TrustServerCertificate = true;
             string DateTime = GetTime();
 
