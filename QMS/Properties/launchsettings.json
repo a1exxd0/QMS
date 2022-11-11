@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "QMS (Unpackaged)": {
+        "commandName": "Project"
+      },
+      "QMS (Package)": {
+        "commandName": "MsixPackage"
+      }
+    }
+}
