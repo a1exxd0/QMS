@@ -6,7 +6,7 @@ namespace QMS.QMSScripts;
 
 public class LoginFunctions
 {
-    
+
 
     #region Modular Functions
     /// <summary>
@@ -16,7 +16,7 @@ public class LoginFunctions
     /// <returns></returns>
     public static bool ValidationASII(string inputted) //takes string input and returns t/f based on if all characters are in ASCII set
     {
-        foreach (var c in inputted) //loops through each character in string
+        foreach (char c in inputted) //loops through each character in string
         {
             if (!(c < 128 && c > 31)) //values >= 128 are not ASCII and values < 32 are control characters
             {
@@ -48,8 +48,8 @@ public class LoginFunctions
     /// <returns>True if string is safe to pass to database</returns>
     public static bool ValidationSQLProof(string inputted)// returns t/f from banned phrases (*, %, SELECT, CREATE, DELETE, and whitespace)
     {
-        var forbiddenWords = new string[] { "*", "%", "SELECT", "CREATE", "DELETE", " " }; //unallowed phrases
-        foreach (var s in forbiddenWords) //loops through unallowed string array
+        string[] forbiddenWords = new string[] { "*", "%", "SELECT", "CREATE", "DELETE", " " }; //unallowed phrases
+        foreach (string s in forbiddenWords) //loops through unallowed string array
         {
             if (inputted.ToUpper().Contains(s)) //if unallowed phrase is in string,
             {
@@ -77,15 +77,19 @@ public class LoginFunctions
         {
             connection.Open();
 
-            var query = "SELECT UserID FROM UserInfo"; //query
+            String query = "SELECT UserID FROM UserInfo"; //query
 
-            using var command = new SqlCommand(query, connection);
-            using SqlDataReader reader = command.ExecuteReader(); //object reader just looks at an entry of data in the database
-            while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                if (reader.GetString(0) == inputted) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                using (SqlDataReader reader = command.ExecuteReader()) //object reader just looks at an entry of data in the database
                 {
-                    return true;
+                    while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+                    {
+                        if (reader.GetString(0) == inputted) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -110,15 +114,19 @@ public class LoginFunctions
         {
             connection.Open();
 
-            var query = "SELECT UserID FROM LoginAttemptInfo"; //query
+            String query = "SELECT UserID FROM LoginAttemptInfo"; //query
 
-            using var command = new SqlCommand(query, connection);
-            using SqlDataReader reader = command.ExecuteReader(); //object reader just looks at an entry of data in the database
-            while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                if (reader.GetString(0) == inputted) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                using (SqlDataReader reader = command.ExecuteReader()) //object reader just looks at an entry of data in the database
                 {
-                    return true;
+                    while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+                    {
+                        if (reader.GetString(0) == inputted) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -132,15 +140,17 @@ public class LoginFunctions
     /// <returns></returns>
     public static string HashAndSalt(string usernameInput, string passwordInput) //returns string of hexadecimals
     {
-        var unhashed = passwordInput + ":" + usernameInput; //salted password
-        using HashAlgorithm algorithm = SHA256.Create(); //instance of algorithm used created
-        var byteArray = algorithm.ComputeHash(Encoding.UTF8.GetBytes(unhashed)); //hash the salted password
-        StringBuilder sb = new StringBuilder();
-        foreach (var b in byteArray)
+        string unhashed = passwordInput + ":" + usernameInput; //salted password
+        using (HashAlgorithm algorithm = SHA256.Create()) //instance of algorithm used created
         {
-            sb.Append(b.ToString("X2")); //adds to string builder for every byte, the "X2" means in the format of uppercase hex.
+            byte[] byteArray = algorithm.ComputeHash(Encoding.UTF8.GetBytes(unhashed)); //hash the salted password
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in byteArray)
+            {
+                sb.Append(b.ToString("X2")); //adds to string builder for every byte, the "X2" means in the format of uppercase hex.
+            }
+            return sb.ToString(); //returns 64 hex characters.
         }
-        return sb.ToString(); //returns 64 hex characters.
 
     }
     /// <summary>
@@ -158,16 +168,20 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-        connection.Open();
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+        {
+            connection.Open();
 
-        var query = $"INSERT INTO UserInfo(UserID, hashedPassword) VALUES (@username, @password)"; //query
+            String query = $"INSERT INTO UserInfo(UserID, hashedPassword) VALUES (@username, @password)"; //query
 
-        using SqlCommand command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@username", usernameInput); //adds parameters to the command to be executed
-        command.Parameters.AddWithValue("@password", hashedPassword);
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@username", usernameInput); //adds parameters to the command to be executed
+                command.Parameters.AddWithValue("@password", hashedPassword);
 
-        command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
+                command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
+            }
+        }
     }
     /// <summary>
     /// Deletes account entry from LoginAndAccessInfo.dbo.UserInfo.
@@ -176,7 +190,7 @@ public class LoginFunctions
     /// <param name="username">Account userID of what you want deleted. Ensure username actually exists else it will cause error</param>
     public static void DeleteAccount(string username)
     {
-        var builder = new SqlConnectionStringBuilder();
+        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
         builder.DataSource = DatabaseOptions.dataSource; //database login information
         builder.UserID = "DeleteUser";
@@ -184,21 +198,25 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using var connection = new SqlConnection(builder.ConnectionString);
-        connection.Open();
-
-        var query = $"DELETE FROM UserInfo WHERE UserID = @user"; //query
-        var query2 = $"INSERT INTO DeletedAccounts VALUES (@user, @dt)"; //second query
-
-        using (var command = new SqlCommand(query, connection))
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
         {
-            command.Parameters.AddWithValue("@user", username);
-            command.ExecuteNonQuery(); //executes a non-returning query (deleting here)
+            connection.Open();
+
+            String query = $"DELETE FROM UserInfo WHERE UserID = @user"; //query
+            String query2 = $"INSERT INTO DeletedAccounts VALUES (@user, @dt)"; //second query
+
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@user", username);
+                command.ExecuteNonQuery(); //executes a non-returning query (deleting here)
+            }
+            using (SqlCommand command2 = new SqlCommand(query2, connection))
+            {
+                command2.Parameters.AddWithValue("@user", username);
+                command2.Parameters.AddWithValue("@dt", GetTime());
+                command2.ExecuteNonQuery(); //executes a non-returning query (deleting here)
+            }
         }
-        using SqlCommand command2 = new SqlCommand(query2, connection);
-        command2.Parameters.AddWithValue("@user", username);
-        command2.Parameters.AddWithValue("@dt", GetTime());
-        command2.ExecuteNonQuery(); //executes a non-returning query (deleting here)
     }
     /// <summary>
     /// Stores attempt into LoginAttemptInfo
@@ -216,17 +234,21 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-        connection.Open();
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+        {
+            connection.Open();
 
-        var query = $"INSERT INTO LoginAttemptInfo(UserID, AttemptDateTime, AttemptSuccessful) VALUES (@user, @datetime, @success)"; //query
+            String query = $"INSERT INTO LoginAttemptInfo(UserID, AttemptDateTime, AttemptSuccessful) VALUES (@user, @datetime, @success)"; //query
 
-        using SqlCommand command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@user", UserID); //adds parameters to the command to be executed
-        command.Parameters.AddWithValue("@datetime", AttemptDateTime);
-        command.Parameters.AddWithValue("@success", AttemptSuccessful);
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@user", UserID); //adds parameters to the command to be executed
+                command.Parameters.AddWithValue("@datetime", AttemptDateTime);
+                command.Parameters.AddWithValue("@success", AttemptSuccessful);
 
-        command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
+                command.ExecuteNonQuery(); //executes a non-returning query (inserting here)
+            }
+        }
     }
     /// <summary>
     /// Gets most recent consecutive wrong attempts for a user
@@ -235,7 +257,7 @@ public class LoginFunctions
     /// <returns>Integer of how many consecutive wrongs there are</returns>
     public static int GetConsecutiveWrong(string UserID)
     {
-        var Consecutives = 0;
+        int Consecutives = 0;
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
         builder.DataSource = DatabaseOptions.dataSource; //database login information
@@ -248,18 +270,23 @@ public class LoginFunctions
         {
             connection.Open();
 
-            var query = "SELECT * FROM LoginAttemptInfo WHERE UserID = @username ORDER BY AttemptDateTime DESC";
+            String query = "SELECT * FROM LoginAttemptInfo WHERE UserID = @username ORDER BY AttemptDateTime DESC";
             //query for most recent user login attempts
 
-            using SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@username", UserID);
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read() && reader.GetBoolean(2) == false)
-            //moves the object down by one entry, returns true until there are no entries left
-            //second statement finds out whether the attempt was successful
-            //exits once either statement runs to false
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                Consecutives++; //increment consecutive 'falses'
+                command.Parameters.AddWithValue("@username", UserID);
+                using (SqlDataReader reader = command.ExecuteReader())
+                //object reader just looks at an entry of data in the database
+                {
+                    while (reader.Read() && reader.GetBoolean(2) == false)
+                    //moves the object down by one entry, returns true until there are no entries left
+                    //second statement finds out whether the attempt was successful
+                    //exits once either statement runs to false
+                    {
+                        Consecutives++; //increment consecutive 'falses'
+                    }
+                }
             }
         }
         return Consecutives;
@@ -280,14 +307,19 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-        connection.Open();
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+        {
+            connection.Open();
 
-        var query = "SELECT HashedPassword FROM UserInfo WHERE UserID = @username"; //query
+            String query = "SELECT HashedPassword FROM UserInfo WHERE UserID = @username"; //query
 
-        using SqlCommand command = new SqlCommand(query, connection);
-        command.Parameters.AddWithValue("@username", UserID);
-        return command.ExecuteScalar().ToString();
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@username", UserID);
+                return command.ExecuteScalar().ToString();
+
+            }
+        }
     }
     /// <summary>
     /// Checks if a username exists in the table of deleted accounts
@@ -296,7 +328,7 @@ public class LoginFunctions
     /// <returns></returns>
     public bool CheckUsernameExistsInAccounts(string UserID)
     {
-        var builder = new SqlConnectionStringBuilder();
+        SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
         builder.DataSource = DatabaseOptions.dataSource; //database login information
         builder.UserID = "Entry";
@@ -304,19 +336,23 @@ public class LoginFunctions
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
 
-        using (var connection = new SqlConnection(builder.ConnectionString))
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
         {
             connection.Open();
 
-            var query = "SELECT UserID FROM DeletedAccounts"; //query
+            String query = "SELECT UserID FROM DeletedAccounts"; //query
 
-            using var command = new SqlCommand(query, connection);
-            using SqlDataReader reader = command.ExecuteReader(); //object reader just looks at an entry of data in the database
-            while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+            using (SqlCommand command = new SqlCommand(query, connection))
             {
-                if (reader.GetString(0) == UserID) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                using (SqlDataReader reader = command.ExecuteReader()) //object reader just looks at an entry of data in the database
                 {
-                    return true;
+                    while (reader.Read()) //moves the object down by one entry, returns true until there are no entries left
+                    {
+                        if (reader.GetString(0) == UserID) // database formatted by UserID/HashedPassword, so (0) indicates UserID
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -395,26 +431,28 @@ public class LoginFunctions
         builder.Password = "password";
         builder.InitialCatalog = DatabaseOptions.initialCatalog;
         builder.TrustServerCertificate = true;
-        #pragma warning disable IDE0007 // Use implicit type
         string DateTime = GetTime();
-#pragma warning restore IDE0007 // Use implicit type
 
-        using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-        connection.Open();
-
-        var query = $"DELETE FROM LoginAttemptInfo WHERE UserID = @user"; //query
-        var query2 = $"INSERT INTO DeletedAttempts VALUES (@user, @dt)"; //writes into DeletedAttempts file
-
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
         {
-            command.Parameters.AddWithValue("@user", UserID);
-            command.ExecuteNonQuery(); //executes a non-returning query (deleting here)
-        }
+            connection.Open();
 
-        using SqlCommand command2 = new SqlCommand(query2, connection); //executes 2nd query
-        command2.Parameters.AddWithValue("@user", UserID);
-        command2.Parameters.AddWithValue("@dt", DateTime);
-        command2.ExecuteNonQuery();
+            String query = $"DELETE FROM LoginAttemptInfo WHERE UserID = @user"; //query
+            String query2 = $"INSERT INTO DeletedAttempts VALUES (@user, @dt)"; //writes into DeletedAttempts file
+
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@user", UserID);
+                command.ExecuteNonQuery(); //executes a non-returning query (deleting here)
+            }
+
+            using (SqlCommand command2 = new SqlCommand(query2, connection)) //executes 2nd query
+            {
+                command2.Parameters.AddWithValue("@user", UserID);
+                command2.Parameters.AddWithValue("@dt", DateTime);
+                command2.ExecuteNonQuery();
+            }
+        }
     }
     #endregion
 
@@ -431,10 +469,10 @@ public class LoginFunctions
         Problems.Add(3, "Character(s) not in ASCII set");
         Problems.Add(4, "Username already exists");
         Problems.Add(5, "Username already exists inside of DeletedAccounts");
-        var wantedUsername = "";
-        var wantedPassword = "";
+        string wantedUsername = "";
+        string wantedPassword = "";
 
-        var successUsername = false;
+        bool successUsername = false;
         while (!successUsername)
         {
             Console.WriteLine("Username: ");
@@ -449,7 +487,7 @@ public class LoginFunctions
             }
         }
 
-        var successPassword = false;
+        bool successPassword = false;
         while (!successPassword)
         {
             Console.WriteLine("Password: ");
@@ -464,7 +502,7 @@ public class LoginFunctions
                 successPassword = true;
             }
         }
-        var hashedPassword = HashAndSalt(wantedUsername, wantedPassword);
+        string hashedPassword = HashAndSalt(wantedUsername, wantedPassword);
         StoreUserInfo(wantedUsername, hashedPassword);
         StoreAttemptInfo(wantedUsername, GetTime(), 1);
 
@@ -490,9 +528,9 @@ public class LoginFunctions
     public static string Login()
     {
         Console.WriteLine("Username: ");
-        var inputUsername = Console.ReadLine();
+        string inputUsername = Console.ReadLine();
         Console.WriteLine("Password: ");
-        var inputPassword = Console.ReadLine();
+        string inputPassword = Console.ReadLine();
 
         if (StandardCheck(inputUsername) != 0 || StandardCheck(inputPassword) != 0)
         {
@@ -501,8 +539,8 @@ public class LoginFunctions
 
         if (CheckUsernameExists(inputUsername) == true)
         {
-            var hashedPassword = HashAndSalt(inputUsername, inputPassword);
-            var comparisonPassword = GetPassword(inputUsername);
+            string hashedPassword = HashAndSalt(inputUsername, inputPassword);
+            string comparisonPassword = GetPassword(inputUsername);
 
             if (hashedPassword == comparisonPassword)
             {
