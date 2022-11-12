@@ -10,10 +10,11 @@ public class ClientFunctions
     {
         using Socket client = new(ciSocket.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         await client.ConnectAsync(ciSocket);
+        s = s + "<|EOM|>";
         while (true)
         {
             var messageBytes = Encoding.UTF8.GetBytes(s);
-            _ = await client.SendAsync(messageBytes,SocketFlags.None);
+            _ = await client.SendAsync(messageBytes, SocketFlags.None);
             Console.WriteLine("sent ci");
 
             var buffer = new byte[1024];
