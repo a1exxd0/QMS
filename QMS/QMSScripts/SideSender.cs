@@ -250,22 +250,23 @@ public class SideSender
 
         return returned;
     }
+    /*
     static void Main()
     {
-        //QubitSystem[] qs = new QubitSystem[2];
-        //qs[0] = new QubitSystem(2);
-        //qs[0].applyGateToOneQubit(1, QubitModule.H);
-        //qs[1] = new QubitSystem(3);
-        //SenderQubits sq = new SenderQubits(1, 3, qs);
-        //string stuff = sq.SQSerialize();
+        QubitSystem[] qs = new QubitSystem[2];
+        qs[0] = new QubitSystem(2);
+        qs[0].applyGateToOneQubit(1, QubitModule.H);
+        qs[1] = new QubitSystem(3);
+        SenderQubits sq = new SenderQubits(1, 3, qs);
+        string stuff = sq.SQSerialize();
 
-        ////Console.WriteLine(stuff);
-        //SenderQubits result = JsonConvert.DeserializeObject<SenderQubits>(stuff);
-        //QubitSystem.PrintDiracVector(result.qubitSystems[0].getDiracVector());
-        ////ConnectionInitializer? dp = JsonConvert.DeserializeObject<ConnectionInitializer>(stuff);
+        //Console.WriteLine(stuff);
+        SenderQubits result = JsonConvert.DeserializeObject<SenderQubits>(stuff);
+        QubitSystem.PrintDiracVector(result.qubitSystems[0].getDiracVector());
+        //ConnectionInitializer? dp = JsonConvert.DeserializeObject<ConnectionInitializer>(stuff);
 
-        //SenderBitsAndQubits testvar = sendCharacterAlgorithm('b', 2, 1);
-        //Console.WriteLine(testvar.bits.SCSerialize());
-        //Console.WriteLine(testvar.qubits.SQSerialize());
-    }
+        SenderBitsAndQubits testvar = sendCharacterAlgorithm('b', 2, 1);
+        Console.WriteLine(testvar.bits.SCSerialize());
+        Console.WriteLine(testvar.qubits.SQSerialize());
+    } */
 }
