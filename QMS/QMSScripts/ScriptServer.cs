@@ -4,7 +4,7 @@ using System.Text;
 namespace QMS.QMSScripts;
 public class ServerFunctions
 {
-    public async Task<string> RecieveCI()
+    public static async Task<string> RecieveCI()
     {
         using Socket listener = new(SocketType.Stream, ProtocolType.Tcp);
         listener.Listen(31050);

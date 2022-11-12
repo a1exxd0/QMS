@@ -5,8 +5,8 @@ using System.Text;
 namespace QMS.QMSScripts;
 public class ClientFunctions
 {
-    public readonly IPEndPoint ciSocket = new(DatabaseOptions.ServerIP, 31050);
-    public async void SendCI(string s)
+    public static readonly IPEndPoint ciSocket = new(DatabaseOptions.ServerIP, 31050);
+    public static async void SendCI(string s)
     {
         using Socket client = new(ciSocket.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         await client.ConnectAsync(ciSocket);
