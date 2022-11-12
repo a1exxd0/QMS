@@ -190,12 +190,13 @@ public class SideSender
     /// <returns>Object containing SenderCharacters & SenderQubits</returns>
     public static SenderBitsAndQubits sendCharacterAlgorithm(char c, uint pos, uint messageID)
     {
-        using var system = instantiateQubits();
+
+        QubitSystem[] system = instantiateQubits();
         ByteQubitsPair measurementResult = measureEightQubits(system);
 
         int appliedXORInt = c ^ measurementResult.bits;
-        var charSent = new SenderCharacters(messageID, pos, appliedXORInt);
-        var qubitsSent = new SenderQubits(messageID, pos, measurementResult.qubits);
+        SenderCharacters charSent = new SenderCharacters(messageID, pos, appliedXORInt);
+        SenderQubits qubitsSent = new SenderQubits(messageID, pos, measurementResult.qubits);
 
         SenderBitsAndQubits returned = new SenderBitsAndQubits();
         returned.bits = charSent;
