@@ -16,7 +16,7 @@ public class ServerFunctions
     public static readonly IPEndPoint sqReciever = new(IPAddress.Any, 31053);
     public static readonly IPEndPoint moReciever = new(IPAddress.Any, 31054);
     /// <summary>
-    /// Listens for any incoming packer
+    /// Listens for any incoming packet
     /// </summary>
     /// <returns>Returns packet in the form of a ConnectionInitializer</returns>
     public static async Task<ConnectionInitializer> RecieveCI()
@@ -48,7 +48,7 @@ public class ServerFunctions
         }
     }
     /// <summary>
-    /// Listens for any incoming packer
+    /// Listens for any incoming packet
     /// </summary>
     /// <returns>Returns packet in the form of a MessageInitializer</returns>
     public static async Task<MessageInitializer> RecieveMI()
@@ -80,7 +80,7 @@ public class ServerFunctions
         }
     }
     /// <summary>
-    /// Listens for any incoming packer
+    /// Listens for any incoming packet
     /// </summary>
     /// <returns>Returns packet in the form of SenderCharacters</returns>
     public static async Task<SenderCharacters> RecieveSC()
@@ -112,7 +112,7 @@ public class ServerFunctions
         }
     }
     /// <summary>
-    /// Listens for any incoming packer
+    /// Listens for any incoming packet
     /// </summary>
     /// <returns>Returns packet in the form of SenderQubits</returns>
     public static async Task<SenderQubits> RecieveSQ()
