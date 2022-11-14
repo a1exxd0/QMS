@@ -26,14 +26,14 @@ public class ClientFunctions
         {
             var messageBytes = Encoding.UTF8.GetBytes(s);
             _ = await client.SendAsync(messageBytes, SocketFlags.None); 
-            Console.WriteLine("sent ci");//execute once message has sent
+            //Console.WriteLine("sent ci");//execute once message has sent
 
             var buffer = new byte[1024];
             var recieved = await client.ReceiveAsync(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, recieved);
             if (response == "<|ACK|>")
             {
-                Console.WriteLine("acknowledged");
+                //Console.WriteLine("acknowledged");
                 break;
             } //file is fully correctly recieved.
         }

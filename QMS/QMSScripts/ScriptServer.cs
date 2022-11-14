@@ -26,12 +26,12 @@ public class ServerFunctions
             var eom = "<|EOM|>";
             if (response.IndexOf(eom) > -1 /* end of message detected*/)
             {
-                Console.WriteLine("message recieved");
+                //Console.WriteLine("message recieved");
 
                 var ackMessage = "<|ACK|>";
                 var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
                 await handler.SendAsync(echoBytes, 0);
-                Console.WriteLine("acknowledgement sent");
+                //Console.WriteLine("acknowledgement sent");
                 //convert to object and return
                 ConnectionInitializer? ci = JsonConvert.DeserializeObject<ConnectionInitializer>
                     (response.Replace(eom, "")); 
