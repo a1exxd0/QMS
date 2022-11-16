@@ -155,4 +155,29 @@ public class ClientFunctions
 
         client.Shutdown(SocketShutdown.Both);
     }
+
+    static uint messageIDcounter = 0; //resets when application restarts
+                                      //tracks messages sent to avoid clashes
+    /// <summary>
+    /// Sends message to server
+    /// </summary>
+    /// <param name="s">string to be sent</param>
+    public static async void SendMessage(string s)
+    {
+        var chararray = SideSender.splitIntoCharacters(s);
+        MessageInitializer MI = new(messageIDcounter, Convert.ToUInt32(chararray.Length));
+        
+        SendMI(MI.MISerialize()); //To let server know message is coming
+
+        for (uint i = 0; i < chararray.Length; i++) //i represents char position
+        {
+            //deals with setting up correct object properties seperately.
+            SenderBitsAndQubits BQ = SideSender.sendCharacterAlgorithm
+                                            (chararray[i], i, messageIDcounter);
+            SendSQ(BQ.qubits.SQSerialize());
+            SendSC(BQ.bits.SCSerialize());
+            
+        }
+        messageIDcounter++; //increment for unique message IDs
+    }
 }
