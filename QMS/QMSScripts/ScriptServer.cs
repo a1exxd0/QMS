@@ -33,28 +33,32 @@ public class ProcessCI
         listener.Bind(ciReciever);//accepts connections from all ip addresses
                                   //listening from port 31050
         listener.Listen(100);
-        var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[4096];
-            var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-            var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-            var eom = "<|EOM|>";
-            if (response.IndexOf(eom) > -1 /* end of message detected*/)
+            var handler = await listener.AcceptAsync(); //accept connection
+            while (true)
             {
-                //Console.WriteLine("message recieved");
+                var buffer = new byte[4096];
+                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
+                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
+                var eom = "<|EOM|>";
+                if (response.IndexOf(eom) > -1 /* end of message detected*/)
+                {
+                    //Console.WriteLine("message recieved");
 
-                var ackMessage = "<|ACK|>";
-                var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                await handler.SendAsync(echoBytes, 0);
-                //Console.WriteLine("acknowledgement sent");
-                //convert to object and return
-                ConnectionInitializer? ci = JsonConvert.DeserializeObject<ConnectionInitializer>
-                    (response.Replace(eom, ""));
-                EventArgsCI data = new();
-                data.CI = ci; //creating event argument for event flag
+                    var ackMessage = "<|ACK|>";
+                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
+                    await handler.SendAsync(echoBytes, 0);
+                    //Console.WriteLine("acknowledgement sent");
+                    //convert to object and return
+                    ConnectionInitializer? ci = JsonConvert.DeserializeObject<ConnectionInitializer>
+                        (response.Replace(eom, ""));
+                    EventArgsCI data = new();
+                    data.CI = ci; //creating event argument for event flag
 
-                OnComplete(data);
+                    OnComplete(data);
+                    break;
+                }
             }
         }
     }
@@ -95,28 +99,32 @@ public class ProcessMI
         listener.Bind(miReciever);//accepts connections from all ip addresses
                                   //listening from port 31051
         listener.Listen(100);
-        var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[2048];
-            var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-            var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-            var eom = "<|EOM|>";
-            if (response.IndexOf(eom) > -1 /* end of message detected*/)
+            var handler = await listener.AcceptAsync(); //accept connection
+            while (true)
             {
-                //Console.WriteLine("message recieved");
+                var buffer = new byte[2048];
+                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
+                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
+                var eom = "<|EOM|>";
+                if (response.IndexOf(eom) > -1 /* end of message detected*/)
+                {
+                    //Console.WriteLine("message recieved");
 
-                var ackMessage = "<|ACK|>";
-                var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                await handler.SendAsync(echoBytes, 0);
-                //Console.WriteLine("acknowledgement sent");
-                //convert to object and return
-                MessageInitializer? mi = JsonConvert.DeserializeObject<MessageInitializer>
-                    (response.Replace(eom, ""));
-                EventArgsMI data = new();
-                data.MI = mi;
+                    var ackMessage = "<|ACK|>";
+                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
+                    await handler.SendAsync(echoBytes, 0);
+                    //Console.WriteLine("acknowledgement sent");
+                    //convert to object and return
+                    MessageInitializer? mi = JsonConvert.DeserializeObject<MessageInitializer>
+                        (response.Replace(eom, ""));
+                    EventArgsMI data = new();
+                    data.MI = mi;
 
-                OnComplete(data);
+                    OnComplete(data);
+                    break;
+                }
             }
         }
     }
@@ -157,28 +165,32 @@ public class ProcessSC
         listener.Bind(scReciever);//accepts connections from all ip addresses
                                   //listening from port 31052
         listener.Listen(100);
-        var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[4096];
-            var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-            var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-            var eom = "<|EOM|>";
-            if (response.IndexOf(eom) > -1 /* end of message detected*/)
+            var handler = await listener.AcceptAsync(); //accept connection
+            while (true)
             {
-                //Console.WriteLine("message recieved");
+                var buffer = new byte[4096];
+                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
+                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
+                var eom = "<|EOM|>";
+                if (response.IndexOf(eom) > -1 /* end of message detected*/)
+                {
+                    //Console.WriteLine("message recieved");
 
-                var ackMessage = "<|ACK|>";
-                var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                await handler.SendAsync(echoBytes, 0);
-                //Console.WriteLine("acknowledgement sent");
-                //convert to object and return
-                SenderCharacters? sc = JsonConvert.DeserializeObject<SenderCharacters>
-                    (response.Replace(eom, ""));
-                EventArgsSC data = new();
-                data.SC = sc;
+                    var ackMessage = "<|ACK|>";
+                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
+                    await handler.SendAsync(echoBytes, 0);
+                    //Console.WriteLine("acknowledgement sent");
+                    //convert to object and return
+                    SenderCharacters? sc = JsonConvert.DeserializeObject<SenderCharacters>
+                        (response.Replace(eom, ""));
+                    EventArgsSC data = new();
+                    data.SC = sc;
 
-                OnComplete(data);
+                    OnComplete(data);
+                    break;
+                }
             }
         }
     }
@@ -233,28 +245,32 @@ public class ProcessSQ
         listener.Bind(sqReciever);//accepts connections from all ip addresses
                                   //listening from port 31053
         listener.Listen(100);
-        var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[16384];
-            var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-            var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-            var eom = "<|EOM|>";
-            if (response.IndexOf(eom) > -1 /* end of message detected*/)
+            var handler = await listener.AcceptAsync(); //accept connection
+            while (true)
             {
-                //Console.WriteLine("message recieved");
+                var buffer = new byte[16384];
+                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
+                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
+                var eom = "<|EOM|>";
+                if (response.IndexOf(eom) > -1 /* end of message detected*/)
+                {
+                    //Console.WriteLine("message recieved");
 
-                var ackMessage = "<|ACK|>";
-                var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                await handler.SendAsync(echoBytes, 0);
-                //Console.WriteLine("acknowledgement sent");
-                //convert to object and return
-                SenderQubits? sq = JsonConvert.DeserializeObject<SenderQubits>
-                    (response.Replace(eom, ""));
-                EventArgsSQ data = new();
-                data.SQ = sq;
+                    var ackMessage = "<|ACK|>";
+                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
+                    await handler.SendAsync(echoBytes, 0);
+                    //Console.WriteLine("acknowledgement sent");
+                    //convert to object and return
+                    SenderQubits? sq = JsonConvert.DeserializeObject<SenderQubits>
+                        (response.Replace(eom, ""));
+                    EventArgsSQ data = new();
+                    data.SQ = sq;
 
-                OnComplete(data);
+                    OnComplete(data);
+                    break;
+                }
             }
         }
     }
