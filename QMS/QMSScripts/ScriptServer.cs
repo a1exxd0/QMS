@@ -253,3 +253,26 @@ public class ProcessSQ
         //invoke event
     }
 }
+
+public class MessageHandler
+{
+    public async Task StartListeningForMessages()
+    {
+        ProcessMI process1 = new ProcessMI();
+        ProcessSC process2 = new ProcessSC();
+
+        process1.MessageRecieved += process1_MessageRecieved;
+
+        Parallel.Invoke(
+            () => process1.RecieveMI(),
+            () => process2.RecieveSC()
+
+            );
+        
+    }
+
+    public static void process1_MessageRecieved(object sender, EventArgsMI e)
+    {
+
+    }
+}
