@@ -36,7 +36,7 @@ public class ProcessCI
         var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[1024];
+            var buffer = new byte[4096];
             var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, recieved);
             var eom = "<|EOM|>";
@@ -98,7 +98,7 @@ public class ProcessMI
         var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[1024];
+            var buffer = new byte[2048];
             var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, recieved);
             var eom = "<|EOM|>";
@@ -160,7 +160,7 @@ public class ProcessSC
         var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[1024];
+            var buffer = new byte[4096];
             var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, recieved);
             var eom = "<|EOM|>";
@@ -236,7 +236,7 @@ public class ProcessSQ
         var handler = await listener.AcceptAsync(); //accept connection
         while (true)
         {
-            var buffer = new byte[1024];
+            var buffer = new byte[16384];
             var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, recieved);
             var eom = "<|EOM|>";
@@ -323,6 +323,7 @@ public class MessageHandler
         int encodedValue = e.SC.encodedMessage;
 
         await ProcessSC.CheckMOExists(messageID);
+        Task.Delay(500).Wait();
         int indexSQ = SideReciever.CheckExistsSQ(messageID, characterPosition);
         if (indexSQ == -1) //not in list
         {
@@ -360,6 +361,7 @@ public class MessageHandler
         QubitSystem[] systems = e.SQ.qubitSystems;
 
         await ProcessSC.CheckMOExists(messageID);
+        Task.Delay(500).Wait();
         int indexSC = SideReciever.CheckExistsSC(messageID, characterPosition);
         if (indexSC == -1) //not in list
         {
@@ -408,18 +410,26 @@ public class ProcessMessage
         while (true)
         {
             Task.Delay(2000).Wait();
-            uint messageID = SideReciever.messageIDQueue.Peek();
-            int indexMessage = SideReciever.FindIndexMO(messageID);
-            if (SideReciever.messageObjectList[indexMessage].messageFinishedStatus)
+            try
             {
-                EventArgsMessage data = new EventArgsMessage();
-                data.message = new string(SideReciever.messageObjectList[indexMessage].messageContents);
+                uint messageID = SideReciever.messageIDQueue.Peek();
+                int indexMessage = SideReciever.FindIndexMO(messageID);
+                if (SideReciever.messageObjectList[indexMessage].messageFinishedStatus)
+                {
+                    EventArgsMessage data = new EventArgsMessage();
+                    data.message = new string(SideReciever.messageObjectList[indexMessage].messageContents);
 
-                //clear up clutter in data structures
-                SideReciever.messageIDQueue.Dequeue();
-                SideReciever.messageObjectList.RemoveAt(indexMessage);
-                OnComplete(data);
+                    //clear up clutter in data structures
+                    SideReciever.messageIDQueue.Dequeue();
+                    SideReciever.messageObjectList.RemoveAt(indexMessage);
+                    OnComplete(data);
+                }
             }
+            catch
+            {
+
+            }
+            
         }
     }
     /// <summary>
