@@ -302,13 +302,15 @@ public class MessageHandler
         processMI.MessageRecieved += processMI_MessageRecieved;
         processSC.MessageRecieved += processSC_MessageRecieved;
         processSQ.MessageRecieved += processSQ_MessageRecieved;
-
-        Parallel.Invoke(
+        Thread t = new Thread(new ThreadStart(() => {
+            Parallel.Invoke(
             () => processMI.RecieveMI(),
             () => processSC.RecieveSC(),
             () => processSQ.RecieveSQ()
             );
-        
+        }));
+        t.Start();
+
     }
     /// <summary>
     /// What to execute when invoker is called
