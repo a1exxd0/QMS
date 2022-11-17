@@ -84,6 +84,11 @@ public class SideReciever
         }
         return -1;
     }
+    /// <summary>
+    /// Finds a message object in list of message objects based on messageID
+    /// </summary>
+    /// <param name="messageID">unique identifier</param>
+    /// <returns>index of object</returns>
     public static int FindIndexMO(uint messageID)
     {
         var i = 0;
@@ -97,6 +102,10 @@ public class SideReciever
         }
         return -1;
     }
+    /// <summary>
+    /// If all characters are filled out, change message status to complete
+    /// </summary>
+    /// <param name="messageID">unique identifier for message</param>
     public static void ChangeMessageStatus(uint messageID)
     {
         var i = FindIndexMO(messageID);
