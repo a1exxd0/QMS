@@ -206,6 +206,8 @@ public class SideSender
     }
     /// <summary>
     /// Measures 8 qubits and adjusts accordingly
+    /// 
+    /// For measuring qubit 1 of all sets
     /// </summary>
     /// <param name="qubits">Qubit array</param>
     /// <returns>Object containing 8 qubits array and measurement result</returns>

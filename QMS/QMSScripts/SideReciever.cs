@@ -41,10 +41,74 @@ public class MessageObject
 }
 public class SideReciever
 {
-    public static Queue<int> messageIDQueue = new();
+    public static Queue<uint> messageIDQueue = new();
     public static List<MessageObject> messageObjectList = new();
     public static List<SenderCharacters> SenderCharactersList = new();
     public static List<SenderQubits> SenderQubitsList = new();
 
-    
+    /// <summary>
+    /// Iterates through to find matching SC/SQ pair
+    /// </summary>
+    /// <param name="messageID">unique ID</param>
+    /// <param name="characterPosition">position in message</param>
+    /// <returns>-1 if doesnt exist, else index</returns>
+    public static int CheckExistsSC(uint messageID, uint characterPosition)
+    {
+        var i = 0;
+        foreach (var SC in SenderCharactersList)
+        {
+            if ((SC.messageID == messageID) && (SC.characterPosition == characterPosition))
+            {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+    /// <summary>
+    /// Iterates through to find matching SC/SQ pair
+    /// </summary>
+    /// <param name="messageID">unique ID</param>
+    /// <param name="characterPosition">position in message</param>
+    /// <returns> -1 if doesnt exist, else index</returns>
+    public static int CheckExistsSQ(uint messageID, uint characterPosition)
+    {
+        var i = 0;
+        foreach (var SQ in SenderQubitsList)
+        {
+            if ((SQ.messageID == messageID) && (SQ.characterPosition == characterPosition))
+            {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+    public static int FindIndexMO(uint messageID)
+    {
+        var i = 0;
+        foreach (var MO in messageObjectList)
+        {
+            if (MO.messageID == messageID)
+            {
+                return i;
+            }
+            else { i++; }
+        }
+        return -1;
+    }
+    public static void ChangeMessageStatus(uint messageID)
+    {
+        var i = FindIndexMO(messageID);
+        var complete = true;
+        foreach (char c in messageObjectList[i].messageContents)
+        {
+            if (c == '\0')
+            {
+                complete = false;
+                break;
+            }
+        }
+        messageObjectList[i].messageFinishedStatus = complete;
+    }
 }

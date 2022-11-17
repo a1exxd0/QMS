@@ -190,6 +190,20 @@ public class ProcessSC
         MessageRecieved?.Invoke(this, e);
         //invoke event
     }
+    public static async Task CheckMOExists(uint i)
+    {
+        while (true)
+        {
+            if (SideReciever.messageIDQueue.Contains(i))
+            {
+                break;
+            }
+            else
+            {
+                Task.Delay(1000).Wait();
+            }
+        }
+    }
 }
 /// <summary>
 /// EventArgs child class containing property for what I want passed through program
@@ -212,7 +226,7 @@ public class ProcessSQ
     /// Listens to port
     /// </summary>
     /// <returns>Returns on completion</returns>
-    public async Task RecieveSC()
+    public async Task RecieveSQ()
     {
         using Socket listener = new(SocketType.Stream, ProtocolType.Tcp);
         listener.Bind(sqReciever);//accepts connections from all ip addresses
@@ -256,23 +270,129 @@ public class ProcessSQ
 
 public class MessageHandler
 {
-    public async Task StartListeningForMessages()
+    public static async Task StartListeningForMessages()
     {
-        ProcessMI process1 = new ProcessMI();
-        ProcessSC process2 = new ProcessSC();
+        //Instantiate processes to be used
+        ProcessMI processMI = new ProcessMI();
+        ProcessSC processSC = new ProcessSC();
+        ProcessSQ processSQ= new ProcessSQ();
 
-        process1.MessageRecieved += process1_MessageRecieved;
+        //Subscribing to publishers
+        processMI.MessageRecieved += processMI_MessageRecieved;
+        processSC.MessageRecieved += processSC_MessageRecieved;
+        processSQ.MessageRecieved += processSQ_MessageRecieved;
 
         Parallel.Invoke(
-            () => process1.RecieveMI(),
-            () => process2.RecieveSC()
-
+            () => processMI.RecieveMI(),
+            () => processSC.RecieveSC(),
+            () => processSQ.RecieveSQ()
             );
         
     }
-
-    public static void process1_MessageRecieved(object sender, EventArgsMI e)
+    /// <summary>
+    /// Measures 8 qubits and adjusts accordingly
+    /// 
+    /// For measuring qubit 4 of all sets
+    /// </summary>
+    /// <param name="qubits">Qubit array</param>
+    /// <returns>Object containing 8 qubits array and measurement result</returns>
+    public static int measureEightQubits(QubitSystem[] qubits)
     {
+        int result = 0;
+        for (int i = 0; i < qubits.Length; i++)
+        {
+            int temp = qubits[i].measurement(4);
+            int multiplier = QubitSystem.intPow(2, qubits.Length - i - 1);
+            result += multiplier * temp;
+        }
 
+        return result;
+    }
+    /// <summary>
+    /// What to execute when invoker is called
+    /// 
+    /// For MessageInitializer object
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e">Event argument</param>
+    public static void processMI_MessageRecieved(object sender, EventArgsMI e)
+    {
+        uint messageID = e.MI.messageID;
+        uint messageLength = e.MI.messageLength;
+        MessageObject mo = new MessageObject(messageID, messageLength);
+        SideReciever.messageObjectList.Add(mo);
+        SideReciever.messageIDQueue.Enqueue(messageID);
+    }
+    /// <summary>
+    /// What to execute when invoker is called
+    /// 
+    /// For SenderCharacters object
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e">Event argument</param>
+    public static async void processSC_MessageRecieved(object sender, EventArgsSC e)
+    {
+        uint messageID = e.SC.messageID;
+        uint characterPosition = e.SC.characterPosition;
+        int encodedValue = e.SC.encodedMessage;
+
+        await ProcessSC.CheckMOExists(messageID);
+        int indexSQ = SideReciever.CheckExistsSQ(messageID, characterPosition);
+        if (indexSQ == -1) //not in list
+        {
+            SideReciever.SenderCharactersList.Add(e.SC);
+        }
+        else
+        {
+            //Measure qubits for key 
+            int result = measureEightQubits
+                            (SideReciever.SenderQubitsList[indexSQ].qubitSystems);
+
+            
+            int i = SideReciever.FindIndexMO(messageID);
+            SideReciever.messageObjectList[i].messageContents[characterPosition]
+                = (char)(encodedValue ^ result); //apply XORS
+
+            SideReciever.SenderQubitsList.RemoveAt(indexSQ);
+            //Removes from list for efficiency
+            SideReciever.ChangeMessageStatus(messageID);
+            //change to complete if character array is filled out
+        }
+    }
+
+    /// <summary>
+    /// What to execute when invoker is called
+    /// 
+    /// For SenderQubits object
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e">Event argument</param>
+    public static async void processSQ_MessageRecieved(object sender, EventArgsSQ e)
+    {
+        uint messageID = e.SQ.messageID;
+        uint characterPosition = e.SQ.characterPosition;
+        QubitSystem[] systems = e.SQ.qubitSystems;
+
+        await ProcessSC.CheckMOExists(messageID);
+        int indexSC = SideReciever.CheckExistsSC(messageID, characterPosition);
+        if (indexSC == -1) //not in list
+        {
+            SideReciever.SenderQubitsList.Add(e.SQ);
+        }
+        else
+        {
+            //Measure qubits for key 
+            int result = measureEightQubits(e.SQ.qubitSystems);
+
+            int encodedMessage = SideReciever.SenderCharactersList[indexSC].encodedMessage;
+            int i = SideReciever.FindIndexMO(messageID);
+            SideReciever.messageObjectList[i].messageContents[characterPosition]
+                = (char)(encodedMessage ^ result); //apply XORS
+
+            SideReciever.SenderCharactersList.RemoveAt(indexSC);
+            //Removes from list for efficiency
+            SideReciever.ChangeMessageStatus(messageID);
+            //change to complete if character array is filled out
+        }
     }
 }
