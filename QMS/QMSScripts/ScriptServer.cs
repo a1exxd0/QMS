@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
@@ -270,6 +271,10 @@ public class ProcessSQ
 
 public class MessageHandler
 {
+    /// <summary>
+    /// Run to begin listening to messages
+    /// </summary>
+    /// <returns></returns>
     public static async Task StartListeningForMessages()
     {
         //Instantiate processes to be used
@@ -288,25 +293,6 @@ public class MessageHandler
             () => processSQ.RecieveSQ()
             );
         
-    }
-    /// <summary>
-    /// Measures 8 qubits and adjusts accordingly
-    /// 
-    /// For measuring qubit 4 of all sets
-    /// </summary>
-    /// <param name="qubits">Qubit array</param>
-    /// <returns>Object containing 8 qubits array and measurement result</returns>
-    public static int measureEightQubits(QubitSystem[] qubits)
-    {
-        int result = 0;
-        for (int i = 0; i < qubits.Length; i++)
-        {
-            int temp = qubits[i].measurement(4);
-            int multiplier = QubitSystem.intPow(2, qubits.Length - i - 1);
-            result += multiplier * temp;
-        }
-
-        return result;
     }
     /// <summary>
     /// What to execute when invoker is called
@@ -345,7 +331,7 @@ public class MessageHandler
         else
         {
             //Measure qubits for key 
-            int result = measureEightQubits
+            int result = SideReciever.measureEightQubitsLast
                             (SideReciever.SenderQubitsList[indexSQ].qubitSystems);
 
             
@@ -382,7 +368,7 @@ public class MessageHandler
         else
         {
             //Measure qubits for key 
-            int result = measureEightQubits(e.SQ.qubitSystems);
+            int result = SideReciever.measureEightQubitsLast(e.SQ.qubitSystems);
 
             int encodedMessage = SideReciever.SenderCharactersList[indexSC].encodedMessage;
             int i = SideReciever.FindIndexMO(messageID);
@@ -394,5 +380,55 @@ public class MessageHandler
             SideReciever.ChangeMessageStatus(messageID);
             //change to complete if character array is filled out
         }
+    }
+}
+/// <summary>
+/// EventArgs child class containing property for what I want passed through program
+/// </summary>
+public class EventArgsMessage : EventArgs
+{
+    public string message
+    {
+        get; set;
+    }
+}
+/// <summary>
+/// Class to raise flag when there is a complete message
+/// </summary>
+public class ProcessMessage
+{
+    public EventHandler<EventArgsMessage>? MessageComplete; //Event flag
+
+    /// <summary>
+    /// Repeatedly checks message queue for objects that are complete
+    /// </summary>
+    /// <returns></returns>
+    public async Task CheckForMessages()
+    {
+        while (true)
+        {
+            Task.Delay(2000).Wait();
+            uint messageID = SideReciever.messageIDQueue.Peek();
+            int indexMessage = SideReciever.FindIndexMO(messageID);
+            if (SideReciever.messageObjectList[indexMessage].messageFinishedStatus)
+            {
+                EventArgsMessage data = new EventArgsMessage();
+                data.message = new string(SideReciever.messageObjectList[indexMessage].messageContents);
+
+                //clear up clutter in data structures
+                SideReciever.messageIDQueue.Dequeue();
+                SideReciever.messageObjectList.RemoveAt(indexMessage);
+                OnComplete(data);
+            }
+        }
+    }
+    /// <summary>
+    /// Invoker function
+    /// </summary>
+    /// <param name="e">Event argument</param>
+    protected virtual void OnComplete(EventArgsMessage e)
+    {
+        MessageComplete?.Invoke(this, e);
+        //invoke event
     }
 }

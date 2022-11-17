@@ -120,4 +120,23 @@ public class SideReciever
         }
         messageObjectList[i].messageFinishedStatus = complete;
     }
+    /// <summary>
+    /// Measures 8 qubits and adjusts accordingly
+    /// 
+    /// For measuring qubit 4 of all sets
+    /// </summary>
+    /// <param name="qubits">Qubit array</param>
+    /// <returns>Object containing 8 qubits array and measurement result</returns>
+    public static int measureEightQubitsLast(QubitSystem[] qubits)
+    {
+        int result = 0;
+        for (int i = 0; i < qubits.Length; i++)
+        {
+            int temp = qubits[i].measurement(4);
+            int multiplier = QubitSystem.intPow(2, qubits.Length - i - 1);
+            result += multiplier * temp;
+        }
+
+        return result;
+    }
 }
