@@ -4,15 +4,13 @@
 //System.Net.Sockets
 public class KeyVarFunc
 {
-    private static string? username;
+    public static string? username { get; set; }
+    public static string? senderUsername{ get; set; }
+    public static string? desiredRecipient {get; set; }
+    public static bool? correctRecipient = false;
+    public static bool terminate = false;
 
-    public static string Username
-    {
-        get => username;
-        set => username = value;
-    }
-
-    //Code for listening
+    //Code for listening for messages
     //public static void Main()
     //{
     //    MessageHandler.StartListeningForMessages();
@@ -25,6 +23,18 @@ public class KeyVarFunc
     //{
     //    Console.WriteLine(e.message);
     //}
+}
+
+
+
+//needs to be placed in button
+public class TerminateButton
+{
+    public static void OnPress()
+    {
+        //on button click
+        KeyVarFunc.terminate = true;
+    }
 }
 
  

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace QMS.QMSScripts;
 
@@ -284,9 +285,32 @@ public class ProcessSQ
         //invoke event
     }
 }
-
+/// <summary>
+/// Class for checking and raising event once terminate is true
+/// </summary>
+public class CancelListen
+{
+    public EventHandler? CancellationTokenRecieved;
+    public async Task CheckTerminate()
+    {
+        while (true)
+        {
+            if (KeyVarFunc.terminate)
+            {
+                CancellationTokenRecieved?.Invoke(this, new EventArgs());
+                KeyVarFunc.terminate = false;
+                break;
+            }
+            else
+            {
+                Task.Delay(1000).Wait();
+            }
+        }
+    }
+}
 public class MessageHandler
 {
+    
     /// <summary>
     /// Run to begin listening to messages
     /// </summary>
@@ -302,16 +326,31 @@ public class MessageHandler
         processMI.MessageRecieved += processMI_MessageRecieved;
         processSC.MessageRecieved += processSC_MessageRecieved;
         processSQ.MessageRecieved += processSQ_MessageRecieved;
-        Thread t = new Thread(new ThreadStart(() => {
+
+        //Disposal service when terminate is true
+        var cts = new CancellationTokenSource(700);
+        var options = new ParallelOptions()
+        {
+            MaxDegreeOfParallelism = 5,
+            CancellationToken = cts.Token
+        };
+        try
+        {
             Parallel.Invoke(
             () => processMI.RecieveMI(),
             () => processSC.RecieveSC(),
             () => processSQ.RecieveSQ()
             );
-        }));
-        t.Start();
+        }
+        catch (OperationCanceledException)
+        {
 
+        }
+        CancelListen cl = new CancelListen();
+        await cl.CheckTerminate();
+        cts.Dispose();
     }
+
     /// <summary>
     /// What to execute when invoker is called
     /// 
