@@ -13,9 +13,9 @@
     <Grid x:Name="ContentArea">
         <Canvas Background="#FFDCDCDE">
             <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" VerticalAlignment="Center" Background="#FFAAAAAA" BorderBrush="#FFAAAAAA">
-                <Canvas Opacity="50">
-                    <Button>
-                        <TextBlock HorizontalAlignment="Center" Text="test"> </TextBlock>
+                <Canvas Opacity="100">
+                    <Button >
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="test"> </TextBlock>
                         
                     </Button>
                     
