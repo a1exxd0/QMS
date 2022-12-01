@@ -8,19 +8,10 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Canvas Background="#FFDCDCDE">
+            <Border Width="300" HorizontalAlignment="Left" Height="995" VerticalAlignment="Center" Background="#FFAAAAAA" BorderBrush="#FFAAAAAA"/>
+            <Border BorderThickness="1" Height="240" Width="1275" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="300" Background="#FFC896DA" BorderBrush="#FFC896DA"/>
 
-        <TextBlock
-            Grid.Row="0"
-            x:Uid="Main_Title"
-            Style="{StaticResource PageTitleStyle}" />
-
-        <Grid Grid.Row="1">
-            
-        </Grid>
-        
+        </Canvas>
     </Grid>
 </Page>

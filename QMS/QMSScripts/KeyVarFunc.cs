@@ -7,7 +7,7 @@ public class KeyVarFunc
     public static string? username { get; set; }
     public static string? senderUsername{ get; set; }
     public static string? desiredRecipient {get; set; }
-    public static bool? correctRecipient = false;
+    public static bool correctRecipient = false;
     public static bool terminate = false;
 
     //Code for listening for messages
@@ -23,8 +23,8 @@ public class KeyVarFunc
     //{
     //    Console.WriteLine(e.message);
     //}
-}
 
+}
 
 
 //needs to be placed in button

@@ -308,6 +308,29 @@ public class CancelListen
         }
     }
 }
+/// <summary>
+/// Class for checking and raising event once desiredRecipient is true
+/// </summary>
+public class FindDesiredRecipient
+{
+    public EventHandler? foundDesiredRecipient;
+    public async Task CheckRecipient()
+    {
+        while (true)
+        {
+            if (KeyVarFunc.correctRecipient)
+            {
+                foundDesiredRecipient?.Invoke(this, new EventArgs());
+                KeyVarFunc.correctRecipient = false;
+                break;
+            }
+            else
+            {
+                Task.Delay(1000).Wait();
+            }
+        }
+    }
+}
 public class MessageHandler
 {
     
