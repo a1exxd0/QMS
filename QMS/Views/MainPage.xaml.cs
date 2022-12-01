@@ -14,6 +14,9 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         ViewModel = App.GetService<MainViewModel>();
+        Resources.Add("LeftBorderWidth", 300);
+
         InitializeComponent();
+
     }
 }

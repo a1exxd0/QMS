@@ -4,13 +4,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
     mc:Ignorable="d">
+    
+
 
     <Grid x:Name="ContentArea">
         <Canvas Background="#FFDCDCDE">
-            <Border Width="300" HorizontalAlignment="Left" Height="995" VerticalAlignment="Center" Background="#FFAAAAAA" BorderBrush="#FFAAAAAA"/>
-            <Border BorderThickness="1" Height="240" Width="1275" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="300" Background="#FFC896DA" BorderBrush="#FFC896DA"/>
+            <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" VerticalAlignment="Center" Background="#FFAAAAAA" BorderBrush="#FFAAAAAA">
+                <Canvas Opacity="50">
+                    <Button>
+                        <TextBlock HorizontalAlignment="Center" Text="test"> </TextBlock>
+                        
+                    </Button>
+                    
+                </Canvas>
+
+                
+            </Border>
+            <Border Height="240" Width="3000" HorizontalAlignment="Left"
+                    VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="#FFC896DA" BorderBrush="#FFC896DA">
+
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
+                    <Run FontWeight="Bold" CharacterSpacing="10" FontSize="170" Text="QMS" FontFamily="Segoe UI Black" Foreground="LightGray"/>
+                    </TextBlock>
+            </Border>
+
+
+
+
 
         </Canvas>
     </Grid>
