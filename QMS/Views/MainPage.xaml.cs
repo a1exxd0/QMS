@@ -15,8 +15,18 @@ public sealed partial class MainPage : Page
     {
         ViewModel = App.GetService<MainViewModel>();
         Resources.Add("LeftBorderWidth", 300);
+        Resources.Add("LeftBorderColour", "#FFAAAAAA");
 
         InitializeComponent();
+
+    }
+
+    private void LoginPressed(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+
+    }
+    private void RegisterPressed(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
 
     }
 }

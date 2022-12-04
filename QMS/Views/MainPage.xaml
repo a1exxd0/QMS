@@ -12,17 +12,26 @@
 
     <Grid x:Name="ContentArea">
         <Canvas Background="#FFDCDCDE">
-            <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" VerticalAlignment="Center" Background="#FFAAAAAA" BorderBrush="#FFAAAAAA">
+            <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
+                    VerticalAlignment="Center" Background="{StaticResource LeftBorderColour}" BorderBrush="{StaticResource LeftBorderColour}">
+                
                 <Canvas Opacity="100">
-                    <Button >
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="test"> </TextBlock>
-                        
+                    <Button Click="LoginPressed" Canvas.Top="300" Canvas.Left="75" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Run Text="Login" FontSize="50" FontFamily="Segoe UI Black" Foreground="Black"></Run>
+                        </TextBlock>
                     </Button>
-                    
+
+                    <Button Click="RegisterPressed" Canvas.Top="400" Canvas.Left="50" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Run Text="Register" FontSize="50" FontFamily="Segoe UI Black" Foreground="Black" ></Run>
+                        </TextBlock>
+                    </Button>
                 </Canvas>
 
                 
             </Border>
+            
             <Border Height="240" Width="3000" HorizontalAlignment="Left"
                     VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="#FFC896DA" BorderBrush="#FFC896DA">
 
