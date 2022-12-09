@@ -147,6 +147,7 @@ public sealed partial class MainPage : Page
         }
     }
 
+    //Invokers
     private void LoginPressed(object sender, RoutedEventArgs e)
     {
         LoginPressedRecieved?.Invoke(this, e);
