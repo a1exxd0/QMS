@@ -251,7 +251,7 @@ public class ProcessSQ
             var handler = await listener.AcceptAsync(); //accept connection
             while (true)
             {
-                var buffer = new byte[16384];
+                var buffer = new byte[32768];
                 var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
                 var response = Encoding.UTF8.GetString(buffer, 0, recieved);
                 var eom = "<|EOM|>";
