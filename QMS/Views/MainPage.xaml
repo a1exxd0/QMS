@@ -7,43 +7,77 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
     mc:Ignorable="d">
-    
+
 
 
     <Grid x:Name="ContentArea">
-        <Canvas Background="#FFDCDCDE">
+        <Canvas Background="{StaticResource LightGrey}">
             <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
                     VerticalAlignment="Center" Background="{StaticResource LeftBorderColour}" BorderBrush="{StaticResource LeftBorderColour}">
-                
+
                 <Canvas Opacity="100">
-                    <Button Click="LoginPressed" Canvas.Top="300" Canvas.Left="75" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
+                    <Button x:Name="LoginButton" Click="LoginPressed" Canvas.Top="300" Canvas.Left="75" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Run Text="Login" FontSize="50" FontFamily="Segoe UI Black" Foreground="Black"></Run>
+                            <Run FontWeight="Bold" Text="Login" FontSize="50" FontFamily="Segoe UI Black" Foreground="{StaticResource PurpleColour}"></Run>
                         </TextBlock>
                     </Button>
 
-                    <Button Click="RegisterPressed" Canvas.Top="400" Canvas.Left="50" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
+                    <Button x:Name ="RegisterButton" Click="RegisterPressed" Canvas.Top="400" Canvas.Left="50" Background="{StaticResource LeftBorderColour}" BorderThickness="0">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Run Text="Register" FontSize="50" FontFamily="Segoe UI Black" Foreground="Black" ></Run>
+                            <Run FontWeight="Bold" Text="Register" FontSize="50" FontFamily="Segoe UI Black" Foreground="{StaticResource PurpleColour}" ></Run>
+                        </TextBlock>
+                    </Button>
+                    
+                    
+                    <!-- Make collapsed and only show if left button clicked. Update text.-->
+                    <Button x:Name="SubmitRegister" Click="SubmittedRegister" Canvas.Top="700" Canvas.Left="60" Visibility="Collapsed" Background="{StaticResource LeftBorderColour}" BorderBrush="LightGray">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Run FontWeight="Bold" Text="Submit" FontSize="50" FontFamily="Segoe UI Black" Foreground="White" ></Run>
+                        </TextBlock>
+                    </Button>
+
+                    <!-- Make collapsed and only show if left button clicked. Update text.-->
+                    <Button x:Name="SubmitLogin" Click="SubmittedLogin" Canvas.Top="700" Canvas.Left="60" Visibility="Collapsed" Background="{StaticResource LeftBorderColour}" BorderBrush="LightGray">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Run FontWeight="Bold" Text="Submit" FontSize="50" FontFamily="Segoe UI Black" Foreground="White" ></Run>
                         </TextBlock>
                     </Button>
                 </Canvas>
 
-                
+
+            </Border>
+
+            <Border Height="{StaticResource TopBorderHeight}" Width="3000" HorizontalAlignment="Left"
+                    VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="{StaticResource PurpleColour}" BorderBrush="{StaticResource PurpleColour}">
+
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
+                    <Run FontWeight="Bold" CharacterSpacing="10" FontSize="170" Text="QMS" FontFamily="Segoe UI Black" Foreground="White"/>
+                </TextBlock>
+            </Border>
+
+
+
+            <Border x:Name="LoginForm" Width="700" Height="500" Canvas.Left="{StaticResource LeftBorderWidth}" Canvas.Top="{StaticResource TopBorderHeight}" Background="{StaticResource LightGrey}"
+                    BorderThickness="0" Visibility="Collapsed">
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- Reset everything once either of the left buttons clicked-->
+                    <TextBox x:Name="UsernameLogin" Width ="600" MaxHeight="200" FontSize="40" Header="Login here:" PlaceholderText="Username" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <PasswordBox x:Name="PasswordLogin" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
+                    <TextBlock x:Name="ErrorBoxLogin" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Red"/>
+                </Canvas>
+            </Border>
+
+            <Border x:Name="RegisterForm" Width="700" Height="500" Canvas.Left="{StaticResource LeftBorderWidth}" Canvas.Top="{StaticResource TopBorderHeight}" Background="{StaticResource LightGrey}"
+                    BorderThickness="0" Visibility="Collapsed">
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <!-- Reset everything once either of the left buttons clicked-->
+                    <TextBox x:Name="UsernameRegister" Width ="600" MaxHeight="200" FontSize="40" Header="Register here:" PlaceholderText="Username"/>
+                    <PasswordBox x:Name="PasswordRegister" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
+                    <TextBlock x:Name="ErrorBoxRegister" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Red"/>
+                </Canvas>
             </Border>
             
-            <Border Height="240" Width="3000" HorizontalAlignment="Left"
-                    VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="#FFC896DA" BorderBrush="#FFC896DA">
-
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
-                    <Run FontWeight="Bold" CharacterSpacing="10" FontSize="170" Text="QMS" FontFamily="Segoe UI Black" Foreground="LightGray"/>
-                    </TextBlock>
-            </Border>
-
-
-
-
-
+            
         </Canvas>
     </Grid>
 </Page>
