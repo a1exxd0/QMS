@@ -4,10 +4,6 @@ using QMS.QMSScripts;
 using QMS.ViewModels;
 
 namespace QMS.Views;
-public class LoginEventArgs : EventArgs
-{
-    public string username;
-}
 public sealed partial class MainPage : Page
 {
     public EventHandler<RoutedEventArgs>? LoginPressedRecieved; //Event flags
