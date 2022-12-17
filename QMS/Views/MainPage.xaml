@@ -12,11 +12,7 @@
 
     <Grid x:Name="ContentArea">
         <Canvas Name="MainCanvas" Background="{StaticResource LightGrey}">
-<<<<<<< HEAD
             <Border Name ="MainLeftBorder" Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
-=======
-            <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
->>>>>>> aef9618fd6127117486f76ec0edec3225036fc4e
                     VerticalAlignment="Center" Background="{StaticResource LeftBorderColour}" BorderBrush="{StaticResource LeftBorderColour}">
 
                 <Canvas Opacity="100">
@@ -85,13 +81,5 @@
             <Frame Name="frame"></Frame>
         </Canvas>
 
-<<<<<<< HEAD
-        
-=======
-        <Frame Grid.Row="1" Name="frame" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1000" Height="1000">
-
-
-        </Frame>
->>>>>>> aef9618fd6127117486f76ec0edec3225036fc4e
     </Grid>
 </Page>

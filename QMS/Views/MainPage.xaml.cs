@@ -36,18 +36,18 @@ public sealed partial class MainPage : Page
 
 
         // belongs elsewhere
-        List<Border> MainItems = new();
-        MainItems.Add(MainLeftBorder);
-        MainItems.Add(MainTopBorder);
-        MainItems.Add(LoginForm);
-        MainItems.Add(RegisterForm);
+        //List<Border> MainItems = new();
+        //MainItems.Add(MainLeftBorder);
+        //MainItems.Add(MainTopBorder);
+        //MainItems.Add(LoginForm);
+        //MainItems.Add(RegisterForm);
 
-        frame.Navigate(typeof(MessagingPage));
+        //frame.Navigate(typeof(MessagingPage));
 
-        for(var i = 0; i < MainItems.Count; i++)
-        {
-            MainItems[i].Visibility = Visibility.Collapsed;
-        }
+        //for(var i = 0; i < MainItems.Count; i++)
+        //{
+        //    MainItems[i].Visibility = Visibility.Collapsed;
+        //}
         
 
     }
