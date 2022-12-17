@@ -30,16 +30,33 @@ public sealed partial class MainPage : Page
         SubmittedRegisterRecieved += RegisterPressedFunction;
         SubmittedLoginRecieved += LoginPressedFunction;
 
-        Frame frame = new Frame();
-        frame.Navigate(typeof(MessagingPage));
-        //InitializeComponent();
         
+        
+        InitializeComponent();
+
+
+        // belongs elsewhere
+        List<Border> MainItems = new();
+        MainItems.Add(MainLeftBorder);
+        MainItems.Add(MainTopBorder);
+        MainItems.Add(LoginForm);
+        MainItems.Add(RegisterForm);
+
+        frame.Navigate(typeof(MessagingPage));
+
+        for(var i = 0; i < MainItems.Count; i++)
+        {
+            MainItems[i].Visibility = Visibility.Collapsed;
+        }
+        
+
     }
     private void loginPressedRecievedFunction(object sender, RoutedEventArgs e)
     {
         SubmitRegister.Visibility = Visibility.Collapsed;
         RegisterForm.Visibility = Visibility.Collapsed;
         ErrorBoxLogin.Text = "";
+        SuccessBoxRegister.Text = "";
         SubmitLogin.Visibility = Visibility.Visible;
         LoginForm.Visibility = Visibility.Visible;
     }
@@ -48,6 +65,7 @@ public sealed partial class MainPage : Page
         SubmitLogin.Visibility = Visibility.Collapsed;
         LoginForm.Visibility = Visibility.Collapsed;
         ErrorBoxRegister.Text = "";
+        SuccessBoxRegister.Text = "";
         SubmitRegister.Visibility = Visibility.Visible;
         RegisterForm.Visibility = Visibility.Visible;
     }
@@ -83,7 +101,7 @@ public sealed partial class MainPage : Page
         var hashedPassword = LoginFunctions.HashAndSalt(wantedUsername, wantedPassword);
         LoginFunctions.StoreUserInfo(wantedUsername, hashedPassword);
         LoginFunctions.StoreAttemptInfo(wantedUsername, LoginFunctions.GetTime(), 1);
-
+        SuccessBoxRegister.Text = "Successful registration";
         if (LoginFunctions.CheckUsernameExistsInAttempts(wantedUsername))
         {
             LoginFunctions.DeleteRelevantAttempts(wantedUsername);

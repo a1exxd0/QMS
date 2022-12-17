@@ -11,8 +11,8 @@
 
 
     <Grid x:Name="ContentArea">
-        <Canvas Background="{StaticResource LightGrey}">
-            <Border Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
+        <Canvas Name="MainCanvas" Background="{StaticResource LightGrey}">
+            <Border Name ="MainLeftBorder" Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000" 
                     VerticalAlignment="Center" Background="{StaticResource LeftBorderColour}" BorderBrush="{StaticResource LeftBorderColour}">
 
                 <Canvas Opacity="100">
@@ -47,7 +47,7 @@
 
             </Border>
 
-            <Border Height="{StaticResource TopBorderHeight}" Width="3000" HorizontalAlignment="Left"
+            <Border Name ="MainTopBorder" Height="{StaticResource TopBorderHeight}" Width="3000" HorizontalAlignment="Left"
                     VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="{StaticResource PurpleColour}" BorderBrush="{StaticResource PurpleColour}">
 
                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
@@ -74,10 +74,13 @@
                     <TextBox x:Name="UsernameRegister" Width ="600" MaxHeight="200" FontSize="40" Header="Register here:" PlaceholderText="Username"/>
                     <PasswordBox x:Name="PasswordRegister" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
                     <TextBlock x:Name="ErrorBoxRegister" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Red"/>
+                    <TextBlock x:Name="SuccessBoxRegister" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Green"/>
                 </Canvas>
             </Border>
-            
-            
+
+            <Frame Name="frame"></Frame>
         </Canvas>
+
+        
     </Grid>
 </Page>

@@ -71,4 +71,8 @@
   <data name="Messaging_NoSelection.Text" xml:space="preserve">
     <value>Select an item from the list.</value>
   </data>
+  <data name="Messaging_Title.Text" xml:space="preserve">
+    <value>Messaging</value>
+    <comment>Page title for MessagingPage</comment>
+  </data>
 </root>

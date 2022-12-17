@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.WinUI.UI.Controls;
-
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 
 using QMS.ViewModels;
 
@@ -17,14 +15,5 @@ public sealed partial class MessagingPage : Page
     {
         ViewModel = App.GetService<MessagingViewModel>();
         InitializeComponent();
-        
-    }
-
-    private void OnViewStateChanged(object sender, ListDetailsViewState e)
-    {
-        if (e == ListDetailsViewState.Both)
-        {
-            ViewModel.EnsureItemSelected();
-        }
     }
 }
