@@ -62,9 +62,12 @@ public partial class App : Application
             services.AddSingleton<INavigationService, NavigationService>();
 
             // Core Services
+            services.AddSingleton<ISampleDataService, SampleDataService>();
             services.AddSingleton<IFileService, FileService>();
 
             // Views and ViewModels
+            services.AddTransient<MessagingViewModel>();
+            services.AddTransient<MessagingPage>();
             services.AddTransient<MainViewModel>();
             services.AddTransient<MainPage>();
 

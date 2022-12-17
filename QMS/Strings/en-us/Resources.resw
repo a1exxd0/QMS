@@ -68,4 +68,7 @@
     <value>Main</value>
     <comment>Page title for MainPage</comment>
   </data>
+  <data name="Messaging_NoSelection.Text" xml:space="preserve">
+    <value>Select an item from the list.</value>
+  </data>
 </root>

@@ -30,7 +30,9 @@ public sealed partial class MainPage : Page
         SubmittedRegisterRecieved += RegisterPressedFunction;
         SubmittedLoginRecieved += LoginPressedFunction;
 
-        InitializeComponent();
+        Frame frame = new Frame();
+        frame.Navigate(typeof(MessagingPage));
+        //InitializeComponent();
         
     }
     private void loginPressedRecievedFunction(object sender, RoutedEventArgs e)
