@@ -30,10 +30,9 @@ public sealed partial class MainPage : Page
         SubmittedRegisterRecieved += RegisterPressedFunction;
         SubmittedLoginRecieved += LoginPressedFunction;
 
-        Frame frame = new Frame();
+        InitializeComponent();
         frame.Navigate(typeof(MessagingPage));
-        //InitializeComponent();
-        
+        MainCanvas.Visibility = Visibility.Collapsed;
     }
     private void loginPressedRecievedFunction(object sender, RoutedEventArgs e)
     {
@@ -124,6 +123,8 @@ public sealed partial class MainPage : Page
                 LoginFunctions.StoreAttemptInfo(inputUsername, LoginFunctions.GetTime(), 1);
                 KeyVarFunc.username = inputUsername;
 
+
+                
                 /* write here function to switch to next page
                  * 
                  * 
