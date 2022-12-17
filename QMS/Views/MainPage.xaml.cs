@@ -142,6 +142,8 @@ public sealed partial class MainPage : Page
                 LoginFunctions.StoreAttemptInfo(inputUsername, LoginFunctions.GetTime(), 1);
                 KeyVarFunc.username = inputUsername;
 
+
+                
                 /* write here function to switch to next page
                  * 
                  * 
