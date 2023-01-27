@@ -514,6 +514,7 @@ public class ProcessMessage
     }
     /// <summary>
     /// Invoker function when message is found that is complete
+    /// MUST STORE IN STACK 
     /// </summary>
     /// <param name="e">Event argument</param>
     protected virtual void OnComplete(EventArgsMessage e)
