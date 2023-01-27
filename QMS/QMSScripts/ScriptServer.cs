@@ -513,7 +513,7 @@ public class ProcessMessage
         }
     }
     /// <summary>
-    /// Invoker function
+    /// Invoker function when message is found that is complete
     /// </summary>
     /// <param name="e">Event argument</param>
     protected virtual void OnComplete(EventArgsMessage e)

@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using QMS.QMSScripts;
 using QMS.ViewModels;
+using Windows.Devices.Enumeration;
 
 namespace QMS.Views;
 public sealed partial class MainPage : Page
@@ -34,21 +35,6 @@ public sealed partial class MainPage : Page
         
         InitializeComponent();
 
-
-        // belongs elsewhere
-        //List<Border> MainItems = new();
-        //MainItems.Add(MainLeftBorder);
-        //MainItems.Add(MainTopBorder);
-        //MainItems.Add(LoginForm);
-        //MainItems.Add(RegisterForm);
-
-        //frame.Navigate(typeof(MessagingPage));
-
-        //for(var i = 0; i < MainItems.Count; i++)
-        //{
-        //    MainItems[i].Visibility = Visibility.Collapsed;
-        //}
-        
 
     }
     private void loginPressedRecievedFunction(object sender, RoutedEventArgs e)
@@ -102,6 +88,7 @@ public sealed partial class MainPage : Page
         LoginFunctions.StoreUserInfo(wantedUsername, hashedPassword);
         LoginFunctions.StoreAttemptInfo(wantedUsername, LoginFunctions.GetTime(), 1);
         SuccessBoxRegister.Text = "Successful registration";
+        ErrorBoxRegister.Text = "";
         if (LoginFunctions.CheckUsernameExistsInAttempts(wantedUsername))
         {
             LoginFunctions.DeleteRelevantAttempts(wantedUsername);
@@ -142,14 +129,21 @@ public sealed partial class MainPage : Page
                 LoginFunctions.StoreAttemptInfo(inputUsername, LoginFunctions.GetTime(), 1);
                 KeyVarFunc.username = inputUsername;
 
+                List<Border> MainItems = new();
+                MainItems.Add(MainLeftBorder);
+                MainItems.Add(MainTopBorder);
+                MainItems.Add(LoginForm);
+                MainItems.Add(RegisterForm);
 
-                
-                /* write here function to switch to next page
-                 * 
-                 * 
-                 * 
-                 * 
-                 */
+                frame.Navigate(typeof(MessagingPage));
+
+                for (var i = 0; i < MainItems.Count; i++)
+                {
+                    MainItems[i].Visibility = Visibility.Collapsed;
+                }
+
+                //ErrorBoxLogin.Text = "logged in as " + inputUsername;
+
                 return;
             }
             else

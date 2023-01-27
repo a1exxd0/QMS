@@ -8,13 +8,55 @@
     mc:Ignorable="d">
 
     <Grid x:Name="ContentArea">
-      <Canvas>
-        <TextBox Text="hello">
+      <Canvas Name="MainCanvas" Background="{StaticResource LightGrey}">
+        
+        <Border Name ="MessagingLeftBorder" Width="{StaticResource LeftBorderWidth}" HorizontalAlignment="Left" Height="3000"
+                VerticalAlignment="Center" Background="{StaticResource LeftBorderColour}" BorderBrush="{StaticResource LeftBorderColour}">
+
+          <Canvas Opacity="100">
+            <Button x:Name="ChangeRecipient" Canvas.Top="200" Canvas.Left="50" Background="{StaticResource LeftBorderColour}" BorderThickness="0" Foreground="{StaticResource PurpleColour}">
+              <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run FontWeight="Bold" Text="Change&#x0a;Recipient" FontSize="40" FontFamily="Segoe UI Black"></Run>
+              </TextBlock>
+            </Button>
+
+            <TextBlock x:Name ="LoggedInAs" HorizontalAlignment="Center" Canvas.Top="400" Canvas.Left="50" VerticalAlignment="Center" Foreground="{StaticResource PurpleColour}">
+              <Run FontWeight="Bold" Text="Placeholder&#x0a;LIA" FontSize="40" FontFamily="Segoe UI Black"></Run>
+            </TextBlock>
+
+            <Button x:Name="LogOut" Canvas.Top="700" Canvas.Left="60" Background="{StaticResource LeftBorderColour}" BorderBrush="LightGray">
+              <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run FontWeight="Bold" Text="Log Out" FontSize="50" FontFamily="Segoe UI Black" Foreground="White" ></Run>
+              </TextBlock>
+            </Button>
+          </Canvas>
           
-          
-        </TextBox>
+        </Border>
+
+        <Border Name ="MessagingTopBorder" Height="{StaticResource TopBorderHeight}" Width="3000" HorizontalAlignment="Left"
+                VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="{StaticResource PurpleColour}" BorderBrush="{StaticResource PurpleColour}">
+          <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
+            <Run FontWeight="Bold" CharacterSpacing="9" FontSize="110" Text="Q-gle Assistant" FontFamily="Segoe UI Black" Foreground="White"/>
+          </TextBlock>
+        </Border>
+
+        <Border Name ="MessagingBottomBorder" Height="72" Width="3000" HorizontalAlignment="Left"
+                VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Canvas.Top ="920" Background="White" BorderBrush="White">
+          <Canvas>
+            <TextBox x:Name="TextToBeSent" HorizontalAlignment="Left" Width ="1200" MaxHeight="70" FontSize="40" PlaceholderText="Type here to send"/>
+            
+            <Button x:Name="Send" Background="White" BorderBrush="LightGray" Canvas.Left="1210">
+              <Image Height="50" Width ="50" >
+                <Image.Source>
+                  <BitmapImage UriSource="C:\A-Levels\Computer Science\QMS App\QMS\QMS\Assets\PaperPlane.png"
+                      DecodePixelHeight="50" DecodePixelWidth="50"/>
+                </Image.Source>
+              </Image>
+              
+            </Button>
+          </Canvas>
+        </Border>
         
       </Canvas>
-        
     </Grid>
 </Page>

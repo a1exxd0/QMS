@@ -16,6 +16,9 @@
     <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\PaperPlane.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Styles\Variables.xaml" />
   </ItemGroup>
 
