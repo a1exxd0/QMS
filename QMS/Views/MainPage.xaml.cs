@@ -180,4 +180,5 @@ public sealed partial class MainPage : Page
     {
         SubmittedLoginRecieved?.Invoke(this, e);
     }
+
 }

@@ -7,8 +7,7 @@ public class MessagingViewModel : ObservableRecipient
     public MessagingViewModel()
     {
     }
-
-    
+  
 }
 /// <summary>
 /// Class to hold messages when recieved or sent by the application

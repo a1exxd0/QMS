@@ -20,11 +20,11 @@
               </TextBlock>
             </Button>
 
-            <TextBlock x:Name ="LoggedInAs" HorizontalAlignment="Center" Canvas.Top="400" Canvas.Left="50" VerticalAlignment="Center" Foreground="{StaticResource PurpleColour}">
-              <Run FontWeight="Bold" Text="Placeholder&#x0a;LIA" FontSize="40" FontFamily="Segoe UI Black"></Run>
+            <TextBlock x:Name ="LoggedInAs" HorizontalAlignment="Center" Canvas.Top="400" Canvas.Left="50" VerticalAlignment="Center" Foreground="{StaticResource PurpleColour}"
+                       FontWeight="Bold" Text="Placeholder&#x0a;LIA" FontSize="40" FontFamily="Segoe UI Black">
             </TextBlock>
 
-            <Button x:Name="LogOut" Canvas.Top="700" Canvas.Left="60" Background="{StaticResource LeftBorderColour}" BorderBrush="LightGray">
+            <Button x:Name="LogOut" Click="LogoutPressed" Canvas.Top="700" Canvas.Left="60" Background="{StaticResource LeftBorderColour}" BorderBrush="LightGray">
               <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Run FontWeight="Bold" Text="Log Out" FontSize="50" FontFamily="Segoe UI Black" Foreground="White" ></Run>
               </TextBlock>
@@ -56,7 +56,7 @@
             </Button>
           </Canvas>
         </Border>
-        
+        <Frame Name="frame"></Frame>
       </Canvas>
     </Grid>
 </Page>
