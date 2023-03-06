@@ -26,7 +26,7 @@ public class ConnectionRequestHandler
         switch (e.CI.sendOrRetrieveUsername)
         {
             case 1: //when sender confirms recipient username matches desired
-                KeyVarFunc.senderUsername = e.CI.username;
+                KeyVarFunc.senderUsername = e.CI.username; // COULD THIS BE UNNECESSARY? ignore for now
                 KeyVarFunc.correctRecipient = true;
                 MessageHandler.StartListeningForMessages();
                 break;
