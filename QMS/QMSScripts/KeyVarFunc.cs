@@ -1,4 +1,5 @@
 ﻿namespace QMS.QMSScripts;
+using QMS.ViewModels;
 //Newtonsoft.Json
 //System.Data.SQL
 //System.Net.Sockets
@@ -14,10 +15,19 @@ public class KeyVarFunc
     //kill a connection (needs to be tested)
     public static bool terminate = false;
 
-
+    //container for messages
+    public static List<MessageQueue> queues = new();
+    /// <summary>
+    /// Deletes all items from the queue
+    /// </summary>
+    public static void ClearQueue()
+    {
+        queues.Clear();
+    }
 
     //Defaulted to Q-gle Assistant and trcks what chat should be displayed
     public static string currentEndUser = "Q-gle Assistant";
+
 
     //Code for listening for messages
     //public static void Main()

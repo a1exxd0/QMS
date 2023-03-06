@@ -14,13 +14,13 @@ public class MessagingViewModel : ObservableRecipient
 /// </summary>
 public class MessageViewer
 {
-    public string Message;
-    public bool SentOrRecieved;
+    public string message;
+    public bool sentOrRecieved;
 
-    public MessageViewer(string message, bool sentOrRecieved)
+    public MessageViewer(string Message, bool SentOrRecieved)
     {
-        Message = message;
-        SentOrRecieved = sentOrRecieved; // sent is true, recieved is false
+        message = Message;
+        sentOrRecieved = SentOrRecieved; // sent is true, recieved is false
     }
 }
 /// <summary>

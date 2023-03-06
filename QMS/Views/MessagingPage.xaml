@@ -56,6 +56,16 @@
             </Button>
           </Canvas>
         </Border>
+
+        <Border Name="ChatArea" Canvas.Top="{StaticResource TopBorderHeight}" Canvas.Left="{StaticResource LeftBorderWidth}"
+                Height="740" Width ="1450">
+          <Canvas Background="{StaticResource LightGrey}">
+            <ScrollViewer Height="740" Width="1400">
+              <TextBlock Name="ChatBox" Canvas.Top="30" Canvas.Left="40"></TextBlock>
+            </ScrollViewer>
+          </Canvas>
+        </Border>
+        
         <Frame Name="frame"></Frame>
       </Canvas>
     </Grid>
