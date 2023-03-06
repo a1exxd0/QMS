@@ -49,8 +49,8 @@ public sealed partial class MessagingPage : Page
     private void testFunction()
     {
         MessageViewer temp = new MessageViewer("hey there", true);
-        MessageQueue newQueue = new MessageQueue("Q-gle Assistant");
-        KeyVarFunc.queues.Add(newQueue);
+        MessageList newList = new MessageList("Q-gle Assistant");
+        KeyVarFunc.queues.Add(newList);
 
         KeyVarFunc.currentEndUser = "Q-gle Assistant";
 
@@ -60,9 +60,9 @@ public sealed partial class MessagingPage : Page
 
         //Predicate<MessageQueue> userFinder = matchUser;
         //MUST NOT ALLOW DUPLICATE USERNAMES IN QUEUE
-        temp2 = KeyVarFunc.queues.Find(delegate (MessageQueue mq)
+        temp2 = KeyVarFunc.queues.Find(delegate (MessageList ml)
         {
-            return mq.recieverUsername == KeyVarFunc.currentEndUser;
+            return ml.recieverUsername == KeyVarFunc.currentEndUser;
         })!.queuedMessages.ElementAt(0).message + toBeDisplayed;
 
         SolidColorBrush greenBrush = new();
@@ -84,9 +84,9 @@ public sealed partial class MessagingPage : Page
     //test function 2
     private void addToQueue(MessageViewer mv, string username)
     {
-        KeyVarFunc.queues.Find(delegate (MessageQueue mq)
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
         {
-            return mq.recieverUsername == KeyVarFunc.currentEndUser;
+            return ml.recieverUsername == KeyVarFunc.currentEndUser;
         })!.AddMessage(mv);
     }
 

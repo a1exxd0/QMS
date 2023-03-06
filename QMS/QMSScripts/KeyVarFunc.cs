@@ -16,7 +16,7 @@ public class KeyVarFunc
     public static bool terminate = false;
 
     //container for messages
-    public static List<MessageQueue> queues = new();
+    public static List<MessageList> queues = new();
     /// <summary>
     /// Deletes all items from the queue
     /// </summary>
@@ -24,6 +24,9 @@ public class KeyVarFunc
     {
         queues.Clear();
     }
+    
+
+
 
     //Defaulted to Q-gle Assistant and trcks what chat should be displayed
     public static string currentEndUser = "Q-gle Assistant";

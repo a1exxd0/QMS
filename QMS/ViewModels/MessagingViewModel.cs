@@ -26,33 +26,21 @@ public class MessageViewer
 /// <summary>
 /// One queue for each person you are talking to
 /// </summary>
-public class MessageQueue
-{  
-    public Queue<MessageViewer> queuedMessages= new();
+public class MessageList
+{
+    public List<MessageViewer> queuedMessages = new();
     public string recieverUsername;
-    private static readonly int maxMessages = 10;
-    public MessageQueue(string RecieverUsername)
+    public MessageList(string RecieverUsername)
     {  
         recieverUsername= RecieverUsername;
     }
 
     /// <summary>
-    /// Adds a message to the queue
+    /// Adds a message to the list
     /// </summary>
-    /// <param name="messageViewer">Message you want to send</param>
-    /// <returns>true if a message is popped, false if not</returns>
-    public bool AddMessage(MessageViewer messageViewer)
+    /// <param name="messageViewer">Message you want to add</param>
+    public void AddMessage(MessageViewer messageViewer)
     {
-        if (queuedMessages.Count == maxMessages)
-        {
-            queuedMessages.Dequeue();
-            queuedMessages.Enqueue(messageViewer);
-            return true;
-        }
-        else
-        {
-            queuedMessages.Enqueue(messageViewer);
-            return false;
-        }
+        queuedMessages.Add(messageViewer);
     }
 }
