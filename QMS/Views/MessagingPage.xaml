@@ -35,8 +35,8 @@
 
         <Border Name ="MessagingTopBorder" Height="{StaticResource TopBorderHeight}" Width="3000" HorizontalAlignment="Left"
                 VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Background="{StaticResource PurpleColour}" BorderBrush="{StaticResource PurpleColour}">
-          <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50">
-            <Run FontWeight="Bold" CharacterSpacing="9" FontSize="110" Text="Q-gle Assistant" FontFamily="Segoe UI Black" Foreground="White"/>
+          <TextBlock Name="NameBox" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="50"
+                     FontWeight="Bold" CharacterSpacing="9" FontSize="110" Text="Q-gle Assistant" FontFamily="Segoe UI Black" Foreground="White">
           </TextBlock>
         </Border>
 
@@ -60,8 +60,8 @@
         <Border Name="ChatArea" Canvas.Top="{StaticResource TopBorderHeight}" Canvas.Left="{StaticResource LeftBorderWidth}"
                 Height="740" Width ="1450">
           <Canvas Background="{StaticResource LightGrey}">
-            <ScrollViewer Height="740" Width="1400">
-              <TextBlock Name="ChatBox" Canvas.Top="30" Canvas.Left="40"></TextBlock>
+            <ScrollViewer Height="740" Width="1400" FontSize ="15" Canvas.Top="40" Canvas.Left="40">
+              <TextBlock Name="ChatBox"></TextBlock>
             </ScrollViewer>
           </Canvas>
         </Border>

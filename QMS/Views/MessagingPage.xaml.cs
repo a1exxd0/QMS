@@ -10,6 +10,7 @@ namespace QMS.Views;
 public sealed partial class MessagingPage : Page
 {
     public EventHandler<RoutedEventArgs>? LogoutPressedRecieved; //Event flags
+
     public MessagingViewModel ViewModel
     {
         get;
@@ -48,38 +49,20 @@ public sealed partial class MessagingPage : Page
     //test function 1
     private void testFunction()
     {
-        MessageViewer temp = new MessageViewer("hey there", true);
+        MessageViewer temp = new MessageViewer("hey there", 0);
+        MessageViewer temp1 = new MessageViewer("hi to you too", 1);
+        MessageViewer temp2 = new MessageViewer("Dont input anything bad!", 2);
         MessageList newList = new MessageList("Q-gle Assistant");
         KeyVarFunc.queues.Add(newList);
 
         KeyVarFunc.currentEndUser = "Q-gle Assistant";
 
         addToQueue(temp, "Q-gle Assistant");
-        var toBeDisplayed = "";
-        string temp2;
+        addToQueue(temp1, "Q-gle Assistant");
+        addToQueue(temp2, "Q-gle Assistant");
 
-        //Predicate<MessageQueue> userFinder = matchUser;
-        //MUST NOT ALLOW DUPLICATE USERNAMES IN QUEUE
-        temp2 = KeyVarFunc.queues.Find(delegate (MessageList ml)
-        {
-            return ml.recieverUsername == KeyVarFunc.currentEndUser;
-        })!.queuedMessages.ElementAt(0).message + toBeDisplayed;
+        loadNewRecipient("Q-gle Assistant");
 
-        SolidColorBrush greenBrush = new();
-        greenBrush.Color = Microsoft.UI.Colors.Green;
-        SolidColorBrush redBrush= new();
-        redBrush.Color= Microsoft.UI.Colors.Red;
-        Run run = new();
-
-        run.Text = temp2;
-        run.Foreground = greenBrush;
-        ChatBox.Inlines.Add(run);
-
-        Run run2 = new();
-        run2.Text = "\n\n\nhi to you too";
-        run2.Foreground = redBrush;
-        ChatBox.Inlines.Add(run2);
-        
     }
     //test function 2
     private void addToQueue(MessageViewer mv, string username)
@@ -90,8 +73,53 @@ public sealed partial class MessagingPage : Page
         })!.AddMessage(mv);
     }
 
-    private bool matchUser(string username, string testcase)
+    /// <summary>
+    /// Load a user up to the GUI
+    /// </summary>
+    /// <param name="username"></param>
+    private void loadNewRecipient(string username)
     {
-        if (username == testcase) { return true; } return false;
+        SolidColorBrush greenBrush = new();
+        greenBrush.Color = Microsoft.UI.Colors.Green;
+        SolidColorBrush blueBrush = new();
+        blueBrush.Color = Microsoft.UI.Colors.Blue;
+        SolidColorBrush redBrush = new();
+        redBrush.Color = Microsoft.UI.Colors.Red;
+
+        NameBox.Text= username;
+        ChatBox.Inlines.Clear();//resets textbox contents
+        MessageList mList = KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == username;
+        })!; //get appropriate list
+
+        var initialSize = mList.queuedMessages.Count();
+        for (var i = 0; i < initialSize; i++)
+        {
+            MessageViewer tempMessage = mList.queuedMessages[i];
+
+            if (tempMessage.sentOrRecieved == 0)
+            {
+                Run run = new();
+                run.Text = "You: " + tempMessage.message + "\n\n";
+                run.Foreground = redBrush;
+                ChatBox.Inlines.Add(run);
+            }
+            if (tempMessage.sentOrRecieved == 1)
+            {
+                Run run = new();
+                run.Text = username + ": " + tempMessage.message + "\n\n";
+                run.Foreground = blueBrush;
+                ChatBox.Inlines.Add(run);
+            }
+            if (tempMessage.sentOrRecieved == 2)
+            {
+                Run run = new();
+                run.Text = "Alert: " + tempMessage.message + "\n\n";
+                run.Foreground = greenBrush;
+                ChatBox.Inlines.Add(run);
+            }
+        }
+        
     }
 }
