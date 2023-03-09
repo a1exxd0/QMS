@@ -45,14 +45,13 @@
           <Canvas>
             <TextBox x:Name="TextToBeSent" HorizontalAlignment="Left" Width ="1200" MaxHeight="70" FontSize="40" PlaceholderText="Type here to send"/>
             
-            <Button x:Name="Send" Background="White" BorderBrush="LightGray" Canvas.Left="1210">
+            <Button x:Name="Send" Click="SendMessage" Background="White" BorderBrush="LightGray" Canvas.Left="1210">
               <Image Height="50" Width ="50" >
                 <Image.Source>
                   <BitmapImage UriSource="C:\A-Levels\Computer Science\QMS App\QMS\QMS\Assets\PaperPlane.png"
                       DecodePixelHeight="50" DecodePixelWidth="50"/>
                 </Image.Source>
               </Image>
-              
             </Button>
           </Canvas>
         </Border>

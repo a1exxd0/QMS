@@ -42,9 +42,33 @@ public class MessageList
     /// Adds a message to the end of the list
     /// </summary>
     /// <param name="messageViewer">Message you want to add</param>
-    public void AddMessage(MessageViewer messageViewer)
+    private void AddMessage(MessageViewer messageViewer)
     {
         queuedMessages.Add(messageViewer);
+    }
+    /// <summary>
+    /// Add message sent by app user to queue
+    /// </summary>
+    /// <param name="s"></param>
+    public void AddSentMessage(string s)
+    {
+        queuedMessages.Add(new MessageViewer(s, 0));
+    }
+    /// <summary>
+    /// Adds message recieved by app to queue
+    /// </summary>
+    /// <param name="s"></param>
+    public void AddRecievedMessage(string s)
+    {
+        queuedMessages.Add(new MessageViewer(s, 1));
+    }
+    /// <summary>
+    /// Adds system message to queue
+    /// </summary>
+    /// <param name="s"></param>
+    public void AddSystemMessage(string s)
+    {
+        queuedMessages.Add(new MessageViewer(s, 2));
     }
 
     //FILTER NEWLINES AND ANYTHING NOT IN ASCII KEYSET

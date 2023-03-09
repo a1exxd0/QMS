@@ -1,7 +1,9 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using QMS.QMSScripts;
 using QMS.ViewModels;
 
@@ -10,6 +12,7 @@ namespace QMS.Views;
 public sealed partial class MessagingPage : Page
 {
     public EventHandler<RoutedEventArgs>? LogoutPressedRecieved; //Event flags
+    public EventHandler<RoutedEventArgs>? SendMessageRecieved;
 
     public MessagingViewModel ViewModel
     {
@@ -25,10 +28,14 @@ public sealed partial class MessagingPage : Page
         Resources.Add("PurpleColour", "#C293FF");
         Resources.Add("LightGrey", "#FFDCDCDE");
         LogoutPressedRecieved += LogoutPressedFunction;
+        SendMessageRecieved += SendMessageFunction;
 
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
-        testFunction();
+        MessageList newList = new MessageList("Q-gle Assistant");
+        KeyVarFunc.queues.Add(newList);
+        
+        loadNewRecipient();
     }
     private void LogoutPressedFunction(object sender, RoutedEventArgs e)
     {
@@ -46,39 +53,69 @@ public sealed partial class MessagingPage : Page
     {
         LogoutPressedRecieved?.Invoke(this, e);
     }
-    //test function 1
-    private void testFunction()
+
+
+    /// <summary>
+    /// Works under the assumption a connection is established (this will happen when you type RequestConnection to the bot
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void SendMessageFunction(object sender, RoutedEventArgs e)
     {
-        MessageViewer temp = new MessageViewer("hey there", 0);
-        MessageViewer temp1 = new MessageViewer("hi to you too", 1);
-        MessageViewer temp2 = new MessageViewer("Dont input anything bad!", 2);
-        MessageList newList = new MessageList("Q-gle Assistant");
-        KeyVarFunc.queues.Add(newList);
+        var toBeSent = TextToBeSent.Text;
+        //IMPLEMENT NETWORK HERE
 
-        KeyVarFunc.currentEndUser = "Q-gle Assistant";
-
-        addToQueue(temp, "Q-gle Assistant");
-        addToQueue(temp1, "Q-gle Assistant");
-        addToQueue(temp2, "Q-gle Assistant");
-
-        loadNewRecipient("Q-gle Assistant");
+        //Local message add
+        addToQueue(toBeSent, 0);
+        UpdateSingleMessage();
+        TextToBeSent.Text = "";
 
     }
-    //test function 2
-    private void addToQueue(MessageViewer mv, string username)
+
+    private void SendMessage(object sender, RoutedEventArgs e)
     {
-        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        SendMessageRecieved?.Invoke(this, e);
+    }
+
+
+
+    /// <summary>
+    /// Add a message to queue
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="option">0 = sent, 1 = recieved, 2 = system</param>
+    private void addToQueue(string s, int option)
+    {
+        if (option == 0)
         {
-            return ml.recieverUsername == KeyVarFunc.currentEndUser;
-        })!.AddMessage(mv);
+            KeyVarFunc.queues.Find(delegate (MessageList ml)
+            {
+                return ml.recieverUsername == KeyVarFunc.currentEndUser;
+            })!.AddSentMessage(s);
+        }
+        if (option == 1)
+        {
+            KeyVarFunc.queues.Find(delegate (MessageList ml)
+            {
+                return ml.recieverUsername == KeyVarFunc.currentEndUser;
+            })!.AddRecievedMessage(s);
+        }
+        if (option == 2)
+        {
+            KeyVarFunc.queues.Find(delegate (MessageList ml)
+            {
+                return ml.recieverUsername == KeyVarFunc.currentEndUser;
+            })!.AddSystemMessage(s);
+        }
     }
 
     /// <summary>
     /// Load a user up to the GUI
     /// </summary>
     /// <param name="username"></param>
-    private void loadNewRecipient(string username)
+    private void loadNewRecipient()
     {
+        string username = KeyVarFunc.currentEndUser;
         SolidColorBrush greenBrush = new();
         greenBrush.Color = Microsoft.UI.Colors.Green;
         SolidColorBrush blueBrush = new();
@@ -121,5 +158,46 @@ public sealed partial class MessagingPage : Page
             }
         }
         
+    }
+    /// <summary>
+    /// Only works with updating most recent message
+    /// </summary>
+    private void UpdateSingleMessage()
+    {
+        MessageViewer s = KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == KeyVarFunc.currentEndUser;
+        })!.queuedMessages.Last();
+
+
+        SolidColorBrush greenBrush = new();
+        greenBrush.Color = Microsoft.UI.Colors.Green;
+        SolidColorBrush blueBrush = new();
+        blueBrush.Color = Microsoft.UI.Colors.Blue;
+        SolidColorBrush redBrush = new();
+        redBrush.Color = Microsoft.UI.Colors.Red;
+
+
+        if (s.sentOrRecieved == 0)
+        {
+            Run run = new();
+            run.Text = "You: " + s.message + "\n\n";
+            run.Foreground = redBrush;
+            ChatBox.Inlines.Add(run);
+        }
+        if (s.sentOrRecieved == 1)
+        {
+            Run run = new();
+            run.Text = KeyVarFunc.currentEndUser + ": " + s.message + "\n\n";
+            run.Foreground = blueBrush;
+            ChatBox.Inlines.Add(run);
+        }
+        if (s.sentOrRecieved == 2)
+        {
+            Run run = new();
+            run.Text = "Alert: " + s.message + "\n\n";
+            run.Foreground = greenBrush;
+            ChatBox.Inlines.Add(run);
+        }
     }
 }
