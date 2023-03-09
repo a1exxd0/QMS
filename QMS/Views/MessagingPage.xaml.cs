@@ -13,6 +13,7 @@ public sealed partial class MessagingPage : Page
 {
     public EventHandler<RoutedEventArgs>? LogoutPressedRecieved; //Event flags
     public EventHandler<RoutedEventArgs>? SendMessageRecieved;
+    public QgleAssistant qg = new();
 
     public MessagingViewModel ViewModel
     {
@@ -36,6 +37,8 @@ public sealed partial class MessagingPage : Page
         KeyVarFunc.queues.Add(newList);
         
         loadNewRecipient();
+        InitiateQgleChat();
+        
     }
     private void LogoutPressedFunction(object sender, RoutedEventArgs e)
     {
@@ -55,6 +58,31 @@ public sealed partial class MessagingPage : Page
     }
 
 
+    #region Qgle chats
+    private void InitiateQgleChat()
+    {
+        List<string> response = qg.StartConversation();
+        displayNewQgleMessages(response);
+    }
+    private void RecieveQgleMessage(string s)
+    {
+        qg.updateLastResponse(s);
+        List<string> response = qg.InterpretText();
+        displayNewQgleMessages(response);
+    }
+    private void displayNewQgleMessages(List<string> ls)
+    {
+        for (var i = 0; i < ls.Count; i++)
+        {
+            addToQueue(ls[i], 1);
+            UpdateSingleMessage();
+        }
+    }
+    #endregion
+
+
+    #region Chat functionality
+
     /// <summary>
     /// Works under the assumption a connection is established (this will happen when you type RequestConnection to the bot
     /// </summary>
@@ -66,9 +94,14 @@ public sealed partial class MessagingPage : Page
         //IMPLEMENT NETWORK HERE
 
         //Local message add
+        
         addToQueue(toBeSent, 0);
         UpdateSingleMessage();
         TextToBeSent.Text = "";
+        if (KeyVarFunc.currentEndUser == "Q-gle Assistant")
+        {
+            RecieveQgleMessage(toBeSent);
+        }
 
     }
 
@@ -200,4 +233,5 @@ public sealed partial class MessagingPage : Page
             ChatBox.Inlines.Add(run);
         }
     }
+    #endregion
 }
