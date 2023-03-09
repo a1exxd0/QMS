@@ -31,9 +31,12 @@ public sealed partial class MessagingPage : Page
         ViewModel = App.GetService<MessagingViewModel>();
         Resources.Add("LeftBorderWidth", 300);
         Resources.Add("TopBorderHeight", 180);
-        Resources.Add("LeftBorderColour", "#C3C3C3");
-        Resources.Add("PurpleColour", "#C293FF");
-        Resources.Add("LightGrey", "#FFDCDCDE");
+        //Resources.Add("LeftBorderColour", "#C3C3C3");
+        //Resources.Add("PurpleColour", "#C293FF");
+        //Resources.Add("LightGrey", "#FFDCDCDE");
+        Resources.Add("LeftBorderColour", "#b0e0e6");
+        Resources.Add("PurpleColour", "#6495ED");
+        Resources.Add("LightGrey", "#f0f8ff");
         LogoutPressedRecieved += LogoutPressedFunction;
         SendMessageRecieved += SendMessageFunction;
 

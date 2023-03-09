@@ -62,7 +62,7 @@
                 <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
                     <!-- Reset everything once either of the left buttons clicked-->
                     <TextBox x:Name="UsernameLogin" Width ="600" MaxHeight="200" FontSize="40" Header="Login here:" PlaceholderText="Username" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <PasswordBox x:Name="PasswordLogin" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
+                    <PasswordBox x:Name="PasswordLogin" KeyDown="OnLoginDownHandler" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
                     <TextBlock x:Name="ErrorBoxLogin" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Red"/>
                 </Canvas>
             </Border>
@@ -72,7 +72,7 @@
                 <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
                     <!-- Reset everything once either of the left buttons clicked-->
                     <TextBox x:Name="UsernameRegister" Width ="600" MaxHeight="200" FontSize="40" Header="Register here:" PlaceholderText="Username"/>
-                    <PasswordBox x:Name="PasswordRegister" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
+                    <PasswordBox x:Name="PasswordRegister" KeyDown="OnRegisterDownHandler" Width="600" MaxHeight="200" FontSize="40" PlaceholderText="Password" Canvas.Top="130"/>
                     <TextBlock x:Name="ErrorBoxRegister" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Red"/>
                     <TextBlock x:Name="SuccessBoxRegister" Canvas.Top="200" FontWeight="SemiBold" FontSize="35" Foreground="Green"/>
                 </Canvas>

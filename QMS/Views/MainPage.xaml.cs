@@ -1,8 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using QMS.QMSScripts;
 using QMS.ViewModels;
 using Windows.Devices.Enumeration;
+using Windows.System;
 
 namespace QMS.Views;
 public sealed partial class MainPage : Page
@@ -22,9 +24,12 @@ public sealed partial class MainPage : Page
         ViewModel = App.GetService<MainViewModel>();
         Resources.Add("LeftBorderWidth", 300);
         Resources.Add("TopBorderHeight", 240);
-        Resources.Add("LeftBorderColour", "#C3C3C3");
-        Resources.Add("PurpleColour", "#C293FF");
-        Resources.Add("LightGrey", "#FFDCDCDE");
+        //Resources.Add("LeftBorderColour", "#C3C3C3");
+        //Resources.Add("PurpleColour", "#C293FF");
+        //Resources.Add("LightGrey", "#FFDCDCDE");
+        Resources.Add("LeftBorderColour", "#b0e0e6");
+        Resources.Add("PurpleColour", "#6495ED");
+        Resources.Add("LightGrey", "#f0f8ff");
 
         LoginPressedRecieved += loginPressedRecievedFunction;
         RegisterPressedRecieved += registerPressedRecievedFunction;
@@ -54,6 +59,20 @@ public sealed partial class MainPage : Page
         SuccessBoxRegister.Text = "";
         SubmitRegister.Visibility = Visibility.Visible;
         RegisterForm.Visibility = Visibility.Visible;
+    }
+    private void OnRegisterDownHandler(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Enter)
+        {
+            SubmittedRegisterRecieved?.Invoke(this, e);
+        }
+    }
+    private void OnLoginDownHandler(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Enter)
+        {
+            SubmittedLoginRecieved?.Invoke(this, e);
+        }
     }
     /// <summary>
     /// Once used, user is locked into signing up until it enters valid entries.
