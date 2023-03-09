@@ -18,6 +18,10 @@
               <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Run FontWeight="Bold" Text="Change&#x0a;Recipient" FontSize="40" FontFamily="Segoe UI Black"></Run>
               </TextBlock>
+              <Button.Flyout >
+                <MenuFlyout x:Name ="RecipientNames">
+                </MenuFlyout>
+              </Button.Flyout>
             </Button>
 
             <TextBlock x:Name ="LoggedInAs" HorizontalAlignment="Center" Canvas.Top="400" Canvas.Left="50" VerticalAlignment="Center" Foreground="{StaticResource PurpleColour}"
@@ -43,7 +47,7 @@
         <Border Name ="MessagingBottomBorder" Height="72" Width="3000" HorizontalAlignment="Left"
                 VerticalAlignment="Center" Canvas.Left="{StaticResource LeftBorderWidth}" Canvas.Top ="920" Background="White" BorderBrush="White">
           <Canvas>
-            <TextBox x:Name="TextToBeSent" HorizontalAlignment="Left" Width ="1200" MaxHeight="70" FontSize="40" PlaceholderText="Type here to send"/>
+            <TextBox x:Name="TextToBeSent" KeyDown="OnKeyDownHandler" HorizontalAlignment="Left" Width ="1200" MaxHeight="70" FontSize="40" PlaceholderText="Type here to send"/>
             
             <Button x:Name="Send" Click="SendMessage" Background="White" BorderBrush="LightGray" Canvas.Left="1210">
               <Image Height="50" Width ="50" >

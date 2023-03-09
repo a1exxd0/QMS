@@ -15,17 +15,22 @@ public class QgleAssistant
     private string lastQuestionAskedByUser = "";
     private string lastResponse = "";
 
-    private static readonly Dictionary<int, string> QuestionsFromBot= new();
-    private static readonly Dictionary<int, string> StatementFromBot = new();
+    private static readonly Dictionary<int, string> QuestionsFromBot= new() { 
+        { 0, "How can I help?"},
+        {1, "Who would you like to connect to?" }
+    };
+
+
+    private static readonly Dictionary<int, string> StatementFromBot = new(){
+        { 0, "Connection successful!" },
+        { 1, "Connection failed :("},
+        { 2, "Hey there, " + KeyVarFunc.username + "!" },
+        { 3, "I'm sorry, I didn't understand what you were saying.\n Please reword! I'm not very smart." }
+    };
+
     public QgleAssistant()
     {
-        QuestionsFromBot.Add(0, "How can I help?");
-        QuestionsFromBot.Add(1, "Who would you like to connect to?");
-
-        StatementFromBot.Add(0, "Connection successful!");
-        StatementFromBot.Add(1, "Connection failed :(");
-        StatementFromBot.Add(2, "Hey there, " + KeyVarFunc.username + "!");
-        StatementFromBot.Add(3, "I'm sorry, I didn't understand what you were saying.\n Please reword! I'm not very smart.");
+        StatementFromBot[2] = "Hey there, " + KeyVarFunc.username + "!";
     }
 
     public void updateLastResponse(string response)
@@ -51,7 +56,7 @@ public class QgleAssistant
     public List<string> InterpretText()
     {
         List<string> connectSynonyms = new List<string>() { "connect", "establish", "talk"};
-        List<string> greetingSynonyms = new List<string>() { "hey", "hi", "hello", "greet" };
+        List<string> greetingSynonyms = new List<string>() { "hey", "hi", "hello", "greet", "speak" };
 
 
 

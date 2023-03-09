@@ -3,9 +3,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Media.Animation;
+using System.Windows;
 using QMS.QMSScripts;
 using QMS.ViewModels;
+using Microsoft.UI.Xaml.Input;
+using Windows.UI.Core;
+using Windows.System;
 
 namespace QMS.Views;
 
@@ -13,6 +18,7 @@ public sealed partial class MessagingPage : Page
 {
     public EventHandler<RoutedEventArgs>? LogoutPressedRecieved; //Event flags
     public EventHandler<RoutedEventArgs>? SendMessageRecieved;
+    public EventHandler<KeyEventArgs>? EnterRecieved;
     public QgleAssistant qg = new();
 
     public MessagingViewModel ViewModel
@@ -40,6 +46,7 @@ public sealed partial class MessagingPage : Page
         InitiateQgleChat();
         
     }
+    #region logout pressed functions
     private void LogoutPressedFunction(object sender, RoutedEventArgs e)
     {
         
@@ -56,7 +63,14 @@ public sealed partial class MessagingPage : Page
     {
         LogoutPressedRecieved?.Invoke(this, e);
     }
-
+    #endregion
+    private void OnKeyDownHandler(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Enter)
+        {
+            SendMessageRecieved?.Invoke(this, e);
+        }
+    }
 
     #region Qgle chats
     private void InitiateQgleChat()
@@ -69,6 +83,7 @@ public sealed partial class MessagingPage : Page
         qg.updateLastResponse(s);
         List<string> response = qg.InterpretText();
         displayNewQgleMessages(response);
+        UpdateDropdowns();
     }
     private void displayNewQgleMessages(List<string> ls)
     {
@@ -231,6 +246,31 @@ public sealed partial class MessagingPage : Page
             run.Text = "Alert: " + s.message + "\n\n";
             run.Foreground = greenBrush;
             ChatBox.Inlines.Add(run);
+        }
+    }
+    #endregion
+
+    #region Change recipient
+    private void UpdateDropdowns()
+    {
+        RecipientNames.Items.Clear();
+        List<string> recipientNames = new List<string>();
+        for (var i = 0; i < KeyVarFunc.queues.Count; i++)
+        {
+            recipientNames.Add(KeyVarFunc.queues[i].recieverUsername);
+        }
+        for (var j = 0; j < recipientNames.Count; j++)
+        {
+            MenuFlyoutItem temp = new MenuFlyoutItem();
+            temp.Text = recipientNames[j];
+
+
+            temp.Click += (sender, e) => {
+                KeyVarFunc.currentEndUser = temp.Text;
+                loadNewRecipient();
+            };
+
+            RecipientNames.Items.Add(temp);
         }
     }
     #endregion
