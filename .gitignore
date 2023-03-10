@@ -364,3 +364,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/QMS/QMSScripts/DatabaseOptions (2).cs
