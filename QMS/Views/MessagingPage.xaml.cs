@@ -208,7 +208,6 @@ public sealed partial class MessagingPage : Page
                 ChatBox.Inlines.Add(run);
             }
         }
-        
     }
     /// <summary>
     /// Only works with updating most recent message
