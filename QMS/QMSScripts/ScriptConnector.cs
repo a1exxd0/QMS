@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using QMS.Views;
 
 namespace QMS.QMSScripts;
 
@@ -28,6 +29,9 @@ public class ConnectionRequestHandler
             case 1: //when sender confirms recipient username matches desired
                 KeyVarFunc.senderUsername = e.CI.username; // COULD THIS BE UNNECESSARY? ignore for now
                 KeyVarFunc.correctRecipient = true;
+
+
+                //NEED TO SORT OUT BELOW BIT
                 MessageHandler.StartListeningForMessages();
                 break;
 
@@ -44,7 +48,7 @@ public class ConnectionRequestHandler
                     KeyVarFunc.correctRecipient = true;
                     ci = new(1, KeyVarFunc.username);
                     ClientFunctions.SendCI(ci.CISerialize());
-                    MessageHandler.StartListeningForMessages();
+                    //MessageHandler.StartListeningForMessages(); possibly unnecessary
                 }
                 else
                 {
@@ -56,6 +60,7 @@ public class ConnectionRequestHandler
 
             case 4: //when sender confirms wrong recipient
                 KeyVarFunc.correctRecipient = false;
+                MessagingPage.correctTemporaryCIRecieved = 1;
                 break;
 
             default: //when terminate command is recieved

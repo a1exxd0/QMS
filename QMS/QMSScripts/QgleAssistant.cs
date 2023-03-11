@@ -17,7 +17,8 @@ public class QgleAssistant
 
     private static readonly Dictionary<int, string> QuestionsFromBot= new() { 
         { 0, "How can I help?"},
-        {1, "Who would you like to connect to?" }
+        {1, "Who would you like to connect to?" },
+        {2, "... would like to connect. Do you accept? " } //placeholder text
     };
 
 
@@ -38,7 +39,10 @@ public class QgleAssistant
         lastResponse=response;
     }
 
-
+    public void forceResponse(int i)
+    {
+        
+    }
     /// <summary>
     /// Make the bot ask Hey! How can I help?
     /// </summary>
@@ -57,6 +61,8 @@ public class QgleAssistant
     {
         List<string> connectSynonyms = new List<string>() { "connect", "establish", "talk"};
         List<string> greetingSynonyms = new List<string>() { "hey", "hi", "hello", "greet", "speak" };
+        List<string> yesSynonyms = new List<string>() { "yes","yeah", "indeed", "ok"};
+        List<string> noSynonyms = new List<string>() { "no", "nah"};
 
 
 
@@ -90,6 +96,31 @@ public class QgleAssistant
                 return (new List<string> { StatementFromBot[1] });
             }
         }
+        else if (lastQuestionAskedByBot == 2)
+        {
+            //connection initializer recieved
+            if (checkInList(yesSynonyms, lastResponse))
+            {
+                //user says yes
+                addUserToQueues(lastResponse);
+                lastStatementFromBot = 0;
+                lastQuestionAskedByBot = -1;
+                return (new List<string> { StatementFromBot[0] });
+            }
+            else if(checkInList(noSynonyms, lastResponse))
+            {
+                //user says no
+                lastStatementFromBot = 1;
+                lastQuestionAskedByBot = -1;
+                return (new List<string> { StatementFromBot[1] });
+            }
+            else
+            {
+                //incomprehensible
+                lastStatementFromBot = 3;
+                return new List<string>() { StatementFromBot[3] };
+            }
+        }
         else
         {
             //incomprehensible
@@ -97,6 +128,7 @@ public class QgleAssistant
             return new List<string>() { StatementFromBot[3] };
         }
     }
+
     private bool checkInList(List<string> list, string s)
     {
         for(var i = 0; i< list.Count; i++)
@@ -118,8 +150,8 @@ public class QgleAssistant
         try
         {
             //networking stuff lets say it works
-
-            KeyVarFunc.queues.Add(new ViewModels.MessageList(username));
+            ConnectionRequestHandler.RequestSend(username);
+            //addUserToQueues(username);
             return true;
         }
         catch
@@ -127,5 +159,9 @@ public class QgleAssistant
             //it doesnt work and program throws error (then doesn't break the app and moves on!
             return false;
         }
+    }
+    private void addUserToQueues(string username)
+    {
+        KeyVarFunc.queues.Add(new ViewModels.MessageList(username));
     }
 }

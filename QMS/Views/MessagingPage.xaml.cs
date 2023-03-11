@@ -21,6 +21,47 @@ public sealed partial class MessagingPage : Page
     public EventHandler<KeyEventArgs>? EnterRecieved;
     public QgleAssistant qg = new();
 
+    #region annoying events that ill need to register things
+
+    public EventHandler<EventArgs>? checkTempCIFalse;
+    public EventHandler<EventArgs>? checkTempCITrue
+    public async Task checkTempCIFunction()
+    {
+        while (true)
+        {
+            if (correctTemporaryCIRecieved = 0)
+            {
+                //case correct recieved
+                checkTempCITrue?.Invoke(this, new EventArgs());
+            }
+            else if(correctTemporaryCIRecieved = 1)
+            {
+                //case false recieved
+                checkTempCIFalse?.Invoke(this, new EventArgs());
+            }
+            else
+            {
+                Task.Delay(1000).Wait();
+            }
+        }
+    }
+    public void checkTempCiTrueFunction(object sender, EventArgs e)
+    {
+    
+    }
+    public void checkTempCiFalseFunction(object sender, EventArgs e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+        })!.AddSystemMessage("Recipient unavailable.");
+        correctTemporaryCIRecieved = -1;
+    }
+
+
+    //-1 default, 0 correct, 1 incorrect
+    public static int correctTemporaryCIRecieved = -1;
+
     public MessagingViewModel ViewModel
     {
         get;
@@ -39,6 +80,8 @@ public sealed partial class MessagingPage : Page
         Resources.Add("LightGrey", "#f0f8ff");
         LogoutPressedRecieved += LogoutPressedFunction;
         SendMessageRecieved += SendMessageFunction;
+        checkTempCITrue += checkTempCITrueFunction;
+        checkTempCIFalse += checkTempCIFalseFunction;
 
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
@@ -47,8 +90,18 @@ public sealed partial class MessagingPage : Page
         
         loadNewRecipient();
         InitiateQgleChat();
+
+        ConnectionRequestHandler.StartListeningForConnections();
+        Thread t = new Thread(() => { checkTempCIFunction(); })
         
+
     }
+
+    #region connection listeners
+
+    #endregion
+
+
     #region logout pressed functions
     private void LogoutPressedFunction(object sender, RoutedEventArgs e)
     {
