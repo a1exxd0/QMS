@@ -47,7 +47,11 @@ public sealed partial class MessagingPage : Page
     }
     public void checkTempCiTrueFunction(object sender, EventArgs e)
     {
-    
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+        })!.AddSystemMessage("Recipient connected.");
+        correctTemporaryCIRecieved = -1;
     }
     public void checkTempCiFalseFunction(object sender, EventArgs e)
     {
