@@ -167,7 +167,7 @@ public sealed partial class MessagingPage : Page
     {
         var toBeSent = TextToBeSent.Text;
         //IMPLEMENT NETWORK HERE
-        cf.SendMessage(toBeSent);
+        
         //Local message add
 
         addToQueue(toBeSent, 0);
@@ -176,6 +176,10 @@ public sealed partial class MessagingPage : Page
         if (KeyVarFunc.currentEndUser == "Q-gle Assistant")
         {
             RecieveQgleMessage(toBeSent);
+        }
+        else
+        {
+            cf.SendMessage(toBeSent);
         }
 
     }
