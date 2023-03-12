@@ -150,7 +150,7 @@ public class QgleAssistant
         try
         {
             //networking stuff lets say it works
-            ConnectionRequestHandler.RequestSend(username);
+            //ConnectionRequestHandler.RequestSend(username);
             //addUserToQueues(username);
             return true;
         }

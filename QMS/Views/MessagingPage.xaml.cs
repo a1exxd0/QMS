@@ -24,17 +24,17 @@ public sealed partial class MessagingPage : Page
     #region annoying events that ill need to register things
 
     public EventHandler<EventArgs>? checkTempCIFalse;
-    public EventHandler<EventArgs>? checkTempCITrue
+    public EventHandler<EventArgs>? checkTempCITrue;
     public async Task checkTempCIFunction()
     {
         while (true)
         {
-            if (correctTemporaryCIRecieved = 0)
+            if (correctTemporaryCIRecieved == 0)
             {
                 //case correct recieved
                 checkTempCITrue?.Invoke(this, new EventArgs());
             }
-            else if(correctTemporaryCIRecieved = 1)
+            else if(correctTemporaryCIRecieved == 1)
             {
                 //case false recieved
                 checkTempCIFalse?.Invoke(this, new EventArgs());
@@ -45,7 +45,7 @@ public sealed partial class MessagingPage : Page
             }
         }
     }
-    public void checkTempCiTrueFunction(object sender, EventArgs e)
+    private void checkTempCITrueFunction(object sender, EventArgs e)
     {
         KeyVarFunc.queues.Find(delegate (MessageList ml)
         {
@@ -53,7 +53,7 @@ public sealed partial class MessagingPage : Page
         })!.AddSystemMessage("Recipient connected.");
         correctTemporaryCIRecieved = -1;
     }
-    public void checkTempCiFalseFunction(object sender, EventArgs e)
+    private void checkTempCIFalseFunction(object sender, EventArgs e)
     {
         KeyVarFunc.queues.Find(delegate (MessageList ml)
         {
@@ -95,8 +95,8 @@ public sealed partial class MessagingPage : Page
         loadNewRecipient();
         InitiateQgleChat();
 
-        ConnectionRequestHandler.StartListeningForConnections();
-        Thread t = new Thread(() => { checkTempCIFunction(); })
+        //ConnectionRequestHandler.StartListeningForConnections();
+        Thread t = new Thread(() => { checkTempCIFunction(); });
         
 
     }

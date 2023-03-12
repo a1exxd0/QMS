@@ -9,6 +9,7 @@ public class MessageObject
     internal uint messageLength;
     public char[] messageContents;
     public bool messageFinishedStatus;
+    //public string username;
 
     /// <summary>
     /// Only to be used once a MessageInitializer has been recieved
@@ -21,6 +22,7 @@ public class MessageObject
         this.messageLength = messageLength;
         messageContents = new char[messageLength];
         messageFinishedStatus = false;
+        //username = KeyVarFunc.username;
     }
     /// <summary>
     /// Serializes object
