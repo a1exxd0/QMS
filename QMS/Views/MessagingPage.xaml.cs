@@ -11,6 +11,7 @@ using QMS.ViewModels;
 using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.System;
+using QMS.Networking;
 
 namespace QMS.Views;
 
@@ -20,51 +21,11 @@ public sealed partial class MessagingPage : Page
     public EventHandler<RoutedEventArgs>? SendMessageRecieved;
     public EventHandler<KeyEventArgs>? EnterRecieved;
     public QgleAssistant qg = new();
+    public ProcessMessage pm = new();
+    public ConnectionEstablishment ce = new();
+    public ClientFunctions cf = new();
+    public MessageHandler mh = new();
 
-    #region annoying events that ill need to register things
-
-    public EventHandler<EventArgs>? checkTempCIFalse;
-    public EventHandler<EventArgs>? checkTempCITrue;
-    public async Task checkTempCIFunction()
-    {
-        while (true)
-        {
-            if (correctTemporaryCIRecieved == 0)
-            {
-                //case correct recieved
-                checkTempCITrue?.Invoke(this, new EventArgs());
-            }
-            else if(correctTemporaryCIRecieved == 1)
-            {
-                //case false recieved
-                checkTempCIFalse?.Invoke(this, new EventArgs());
-            }
-            else
-            {
-                Task.Delay(1000).Wait();
-            }
-        }
-    }
-    private void checkTempCITrueFunction(object sender, EventArgs e)
-    {
-        KeyVarFunc.queues.Find(delegate (MessageList ml)
-        {
-            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
-        })!.AddSystemMessage("Recipient connected.");
-        correctTemporaryCIRecieved = -1;
-    }
-    private void checkTempCIFalseFunction(object sender, EventArgs e)
-    {
-        KeyVarFunc.queues.Find(delegate (MessageList ml)
-        {
-            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
-        })!.AddSystemMessage("Recipient unavailable.");
-        correctTemporaryCIRecieved = -1;
-    }
-
-
-    //-1 default, 0 correct, 1 incorrect
-    public static int correctTemporaryCIRecieved = -1;
 
     public MessagingViewModel ViewModel
     {
@@ -76,16 +37,16 @@ public sealed partial class MessagingPage : Page
         ViewModel = App.GetService<MessagingViewModel>();
         Resources.Add("LeftBorderWidth", 300);
         Resources.Add("TopBorderHeight", 180);
-        //Resources.Add("LeftBorderColour", "#C3C3C3");
-        //Resources.Add("PurpleColour", "#C293FF");
-        //Resources.Add("LightGrey", "#FFDCDCDE");
         Resources.Add("LeftBorderColour", "#b0e0e6");
         Resources.Add("PurpleColour", "#6495ED");
         Resources.Add("LightGrey", "#f0f8ff");
+
         LogoutPressedRecieved += LogoutPressedFunction;
         SendMessageRecieved += SendMessageFunction;
-        checkTempCITrue += checkTempCITrueFunction;
-        checkTempCIFalse += checkTempCIFalseFunction;
+        ce.FlagToAddNewRecipient += FlagToAddNewRecipientFunction;
+        ce.FlagForSuccessfulRecipient += FlagForSuccessfulRecipientFunction;
+        ce.FlagForUnsuccessfulRecipient += FlagForUnsuccessfulRecipientFunction;
+        pm.MessageComplete += MessageCompleteFunction;
 
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
@@ -94,12 +55,51 @@ public sealed partial class MessagingPage : Page
         
         loadNewRecipient();
         InitiateQgleChat();
-
-        //ConnectionRequestHandler.StartListeningForConnections();
-        Thread t = new Thread(() => { checkTempCIFunction(); });
+        ce.StartListeningForConnections();
+        
         
 
     }
+
+    #region flags incoming messages
+    private void FlagToAddNewRecipientFunction(object sender, EventArgsUsername e)
+    {
+        MessageList? result = KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+        });
+        if (result == null) { qg.addUserToQueues(e.username); }
+        mh.StartListeningForMessages();
+
+    }
+    private void FlagForSuccessfulRecipientFunction(object sender, EventArgsUsername e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddSystemMessage("Successfully connected!");
+        mh.StartListeningForMessages();
+    }
+    private void FlagForUnsuccessfulRecipientFunction(object sender, EventArgsUsername e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddSystemMessage("Connection failed.");
+    }
+    private void MessageCompleteFunction(object sender, EventArgsMessage e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddRecievedMessage(e.message);
+        if (KeyVarFunc.currentEndUser == e.username)
+        {
+            UpdateSingleMessage();
+        }
+    }
+
+    #endregion
 
     #region connection listeners
 
@@ -167,9 +167,9 @@ public sealed partial class MessagingPage : Page
     {
         var toBeSent = TextToBeSent.Text;
         //IMPLEMENT NETWORK HERE
-
+        cf.SendMessage(toBeSent);
         //Local message add
-        
+
         addToQueue(toBeSent, 0);
         UpdateSingleMessage();
         TextToBeSent.Text = "";
@@ -334,4 +334,3 @@ public sealed partial class MessagingPage : Page
     }
     #endregion
 }
-#endregion

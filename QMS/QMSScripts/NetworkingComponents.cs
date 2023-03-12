@@ -341,8 +341,8 @@ public class SideSender
 #region MessageObject
 public class MessageObject
 {
-    public uint messageID;
-    internal uint messageLength;
+    public int messageID;
+    internal int messageLength;
     public char[] messageContents;
     public bool messageFinishedStatus;
     public string username;

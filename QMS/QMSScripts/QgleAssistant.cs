@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QMS.Networking;
 using QMS.ViewModels;
 
 namespace QMS.QMSScripts;
@@ -130,6 +131,8 @@ public class QgleAssistant
         {
             //networking stuff lets say it works
             //ConnectionRequestHandler.RequestSend(username);
+            ConnectionEstablishment ce = new();
+            ce.RequestSend(username);
 
             //only adds to list if already exists
             MessageList? result = KeyVarFunc.queues.Find(delegate (MessageList ml)
@@ -145,7 +148,7 @@ public class QgleAssistant
             return false;
         }
     }
-    private void addUserToQueues(string username)
+    public void addUserToQueues(string username)
     {
         KeyVarFunc.queues.Add(new ViewModels.MessageList(username));
     }

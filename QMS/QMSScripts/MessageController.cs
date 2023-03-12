@@ -12,172 +12,7 @@ using global::QMS.QMSScripts;
 
 
 namespace QMS.Networking;
-#region recieving sent objects functions
-/// <summary>
-/// Open type class for reusable code
-/// </summary>
-public class EventArgsSentObjects<T> : EventArgs
-{
-    public T obj
-    {
-        get; set;
-    }
-}
-/// <summary>
-/// General function for recieving stuff
-/// </summary>
-public abstract class ProcessSentObjects
-{
-    Dictionary<string, IPEndPoint> socketMatcher = new()
-    {
-        {"MessageInitializer", new(DatabaseOptions.ServerIP, 31051)},
-        {"SenderCharacter", new(DatabaseOptions.ServerIP, 31052)},
-        {"SenderQubits", new(DatabaseOptions.ServerIP, 31053)}
-    };
-    
-    public async Task RecieveSentObject<T>(T obj) where T : SentObjects
-    {
-        using Socket listener = new(SocketType.Stream, ProtocolType.Tcp);
-        listener.Bind(socketMatcher[obj.GetType().ToString()]);//accepts connections from all ip addresses
-
-        listener.Listen(100);
-        while (true)
-        {
-            var handler = await listener.AcceptAsync(); //accept connection
-            while (true)
-            {
-                var buffer = new byte[32768];
-                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-                var eom = "<|EOM|>";
-                if (response.IndexOf(eom) > -1 /* end of message detected*/)
-                {
-                    //Console.WriteLine("message recieved");
-
-                    var ackMessage = "<|ACK|>";
-                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                    await handler.SendAsync(echoBytes, 0);
-                    //Console.WriteLine("acknowledgement sent");
-                    //convert to appropriate object and return
-                    T? final = JsonConvert.DeserializeObject<T>
-                        (response.Replace(eom, ""));
-                    EventArgsSentObjects<SentObjects> data = new();
-                    data.obj = final;
-
-                    OnComplete(data);
-                    break;
-                }
-            }
-        }
-    }
-    /// <summary>
-    /// Invoker function
-    /// </summary>
-    /// <param name="e">Event argument</param>
-    protected abstract void OnComplete(EventArgsSentObjects<SentObjects> e);
-}
-/// <summary>
-/// Class to raise event when MessageInitializer is recieved
-/// </summary>
-public class ProcessMI :ProcessSentObjects
-{
-    public EventHandler<EventArgsSentObjects<MessageInitializer>> MessageRecieved;
-    protected override void OnComplete(EventArgsSentObjects<MessageInitializer> e)
-    {
-        MessageRecieved?.Invoke(this, e);
-    }
-}
-/// <summary>
-/// Class to raise event when SenderCharacters is recieved
-/// </summary>
-public class ProcessSC :ProcessSentObjects
-{
-    public static async Task CheckMOExists(int i)
-    {
-        while (true)
-        {
-            if (SideReciever.messageIDQueue.Contains(i))
-            {
-                break;
-            }
-            else
-            {
-                Task.Delay(1000).Wait();
-            }
-        }
-    }
-    public EventHandler<EventArgsSentObjects<SenderCharacter>> MessageRecieved;
-    protected override void OnComplete(EventArgsSentObjects<SenderCharacter> e)
-    {
-        MessageRecieved?.Invoke(this, e);
-    }
-}
-
-/// <summary>
-/// Class to raise event when SenderCharacters is recieved
-/// </summary>
-public class ProcessSQ :ProcessSentObjects
-{
-    
-}
-#endregion
-#region new stuff
-/// <summary>
-/// Class to raise event when ConnectionInitializer is recieved
-/// </summary>
-public class ProcessCI
-{
-    public EventHandler<EventArgsCI>? MessageRecieved; //Event flag
-    public static readonly IPEndPoint ciReciever = new(IPAddress.Any, 31050); //port to listen to
-    /// <summary>
-    /// Listens to port
-    /// </summary>
-    /// <returns>Returns on completion</returns>
-    public async Task RecieveCI()
-    {
-        using Socket listener = new(SocketType.Stream, ProtocolType.Tcp);
-        listener.Bind(ciReciever);//accepts connections from all ip addresses
-                                  //listening from port 31050
-        listener.Listen(100);
-        while (true)
-        {
-            var handler = await listener.AcceptAsync(); //accept connection
-            while (true)
-            {
-                var buffer = new byte[4096];
-                var recieved = await handler.ReceiveAsync(buffer, SocketFlags.None);
-                var response = Encoding.UTF8.GetString(buffer, 0, recieved);
-                var eom = "<|EOM|>";
-                if (response.IndexOf(eom) > -1 /* end of message detected*/)
-                {
-                    //Console.WriteLine("message recieved");
-
-                    var ackMessage = "<|ACK|>";
-                    var echoBytes = Encoding.UTF8.GetBytes(ackMessage);
-                    await handler.SendAsync(echoBytes, 0);
-                    //Console.WriteLine("acknowledgement sent");
-                    //convert to object and return
-                    ConnectionInitializer? ci = JsonConvert.DeserializeObject<ConnectionInitializer>
-                        (response.Replace(eom, ""));
-                    EventArgsCI data = new();
-                    data.CI = ci; //creating event argument for event flag
-
-                    OnComplete(data);
-                    break;
-                }
-            }
-        }
-    }
-    /// <summary>
-    /// Invoker function
-    /// </summary>
-    /// <param name="e">Event argument</param>
-    protected virtual void OnComplete(EventArgsCI e)
-    {
-        MessageRecieved?.Invoke(this, e);
-        //invoke event
-    }
-}
+#region processing recieved messages
 
 /// <summary>
 /// EventArgs child class containing property for what I want passed through program
@@ -250,7 +85,7 @@ public class ProcessMI
 /// </summary>
 public class EventArgsSC : EventArgs
 {
-    public SenderCharacters SC
+    public SenderCharacter SC
     {
         get; set;
     }
@@ -290,7 +125,7 @@ public class ProcessSC
                     await handler.SendAsync(echoBytes, 0);
                     //Console.WriteLine("acknowledgement sent");
                     //convert to object and return
-                    SenderCharacters? sc = JsonConvert.DeserializeObject<SenderCharacters>
+                    SenderCharacter? sc = JsonConvert.DeserializeObject<SenderCharacter>
                         (response.Replace(eom, ""));
                     EventArgsSC data = new();
                     data.SC = sc;
@@ -310,7 +145,7 @@ public class ProcessSC
         MessageRecieved?.Invoke(this, e);
         //invoke event
     }
-    public static async Task CheckMOExists(uint i)
+    public static async Task CheckMOExists(int i)
     {
         while (true)
         {
@@ -393,7 +228,7 @@ public class ProcessSQ
 }
 
 #endregion
-#region
+#region handling messages
 public class MessageHandler
 {
 
@@ -423,9 +258,9 @@ public class MessageHandler
         try
         {
             Parallel.Invoke(
-            () => processMI.RecieveSentObject(new MessageInitializer(-1, 1)),
-            () => processSC.RecieveSentObject(new SenderCharacter(-1, -1, -1)),
-            () => processSQ.RecieveSentObject(new SenderQubits(-1, -1, new QubitSystem[3]))
+            () => processMI.RecieveMI(),
+            () => processSC.RecieveSC(),
+            () => processSQ.RecieveSQ()
             );
         }
         catch (OperationCanceledException)
@@ -444,11 +279,11 @@ public class MessageHandler
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e">Event argument</param>
-    public void processMI_MessageRecieved(object sender, EventArgsSentObjects e)
+    public void processMI_MessageRecieved(object sender, EventArgsMI e)
     {
         int messageID = e.MI.messageID;
         int messageLength = e.MI.messageLength;
-        string username = e.
+        string username = e.MI.senderUsername;
         MessageObject mo = new MessageObject(messageID, messageLength, username);
         SideReciever.messageObjectList.Add(mo);
         SideReciever.messageIDQueue.Enqueue(messageID);
@@ -460,10 +295,10 @@ public class MessageHandler
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e">Event argument</param>
-    public static async void processSC_MessageRecieved(object sender, EventArgsSC e)
+    public async void processSC_MessageRecieved(object sender, EventArgsSC e)
     {
-        uint messageID = e.SC.messageID;
-        uint characterPosition = e.SC.characterPosition;
+        int messageID = e.SC.messageID;
+        int characterPosition = e.SC.characterPosition;
         int encodedValue = e.SC.encodedMessage;
 
         await ProcessSC.CheckMOExists(messageID);
@@ -498,10 +333,10 @@ public class MessageHandler
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e">Event argument</param>
-    public static async void processSQ_MessageRecieved(object sender, EventArgsSQ e)
+    public async void processSQ_MessageRecieved(object sender, EventArgsSQ e)
     {
-        uint messageID = e.SQ.messageID;
-        uint characterPosition = e.SQ.characterPosition;
+        int messageID = e.SQ.messageID;
+        int characterPosition = e.SQ.characterPosition;
         QubitSystem[] systems = e.SQ.qubitSystems;
 
         await ProcessSC.CheckMOExists(messageID);
@@ -636,6 +471,10 @@ public class EventArgsMessage : EventArgs
     {
         get; set;
     }
+    public string username
+    {
+        get; set;
+    }
 }
 /// <summary>
 /// Class to raise flag when there is a complete message
@@ -661,6 +500,7 @@ public class ProcessMessage
                 {
                     EventArgsMessage data = new EventArgsMessage();
                     data.message = new string(SideReciever.messageObjectList[indexMessage].messageContents);
+                    data.username = SideReciever.messageObjectList[indexMessage].username;
 
                     //clear up clutter in data structures
                     SideReciever.messageIDQueue.Dequeue();
