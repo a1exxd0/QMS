@@ -149,6 +149,34 @@ public class SenderQubits:SentObjects
     }
 }
 #endregion
+#region ByteQubitsPair & SenderBits&Qubits
+public class ByteQubitsPair
+{
+    public int bits
+    {
+        get; set;
+    }
+    public QubitSystem[]? qubits
+    {
+        get; set;
+    }
+}
+/// <summary>
+/// Class to store objects created from a single character input
+/// </summary>
+public class SenderBitsAndQubits
+{
+    public SenderCharacter? bits
+    {
+        get; set;
+    }
+    public SenderQubits? qubits
+    {
+        get; set;
+    }
+}
+#endregion
+#region ClientFunctions: components for actually sending across network
 public class ClientFunctions
 {
     //declarations for IP/Socket combinations for every class transferred over network
@@ -192,6 +220,7 @@ public class ClientFunctions
 
     /// <summary>
     /// Sends message to server
+    /// DOES NOT UPDATE QUEUES - only sends the message
     /// </summary>
     /// <param name="s">string to be sent</param>
     public async void SendMessage(string s)
@@ -204,13 +233,132 @@ public class ClientFunctions
         for (int i = 0; i < chararray.Length; i++) //i represents char position
         {
             //deals with setting up correct object properties seperately.
-            SenderBitsAndQubits BQ = SideSender.sendCharacterAlgorithm
-                                            (chararray[i], i, messageIDcounter);
+            SenderBitsAndQubits BQ = SideSender.sendCharacterAlgorithm //may need adjusting
+                                            (chararray[i], i, KeyVarFunc.messageIDCounter);
             SendObject(BQ.qubits);
             SendObject(BQ.bits);
             Task.Delay(600).Wait();
         }
-        messageIDcounter++; //increment for unique message IDs
+        KeyVarFunc.messageIDCounter++; //increment for unique message IDs
     }
 }
 
+#endregion
+#region algorithm for encrypting singular characters
+public class SideSender
+{
+    /// <summary>
+    /// Use when you have a character you want to send
+    /// </summary>
+    /// <param name="c">character</param>
+    /// <param name="pos">character position</param>
+    /// <param name="messageID">ID for message</param>
+    /// <returns>Object containing SenderCharacters & SenderQubits</returns>
+    public static SenderBitsAndQubits sendCharacterAlgorithm(char c, int pos, int messageID)
+    {
+
+        QubitSystem[] system = instantiateQubits();
+        ByteQubitsPair measurementResult = measureEightQubits(system);
+
+        int appliedXORInt = c ^ measurementResult.bits;
+        SenderCharacter charSent = new SenderCharacter(messageID, pos, appliedXORInt);
+        SenderQubits qubitsSent = new SenderQubits(messageID, pos, measurementResult.qubits);
+
+        SenderBitsAndQubits returned = new SenderBitsAndQubits();
+        returned.bits = charSent;
+        returned.qubits = qubitsSent;
+
+        return returned;
+    }
+    #region sub-functions for encrypting/decrypting characters
+    /// <summary>
+    /// Split string into character array
+    /// </summary>
+    /// <param name="s">string you want to split</param>
+    /// <returns>character array</returns>
+    public static char[] splitIntoCharacters(string s)
+    {
+        char[] returned = new char[s.Length];
+        int i = 0;
+        foreach (char c in s)
+        {
+            returned[i] = c; i++;
+        }
+        return returned;
+    }
+    
+    /// <summary>
+    /// Measures 8 qubits and adjusts accordingly
+    /// 
+    /// For measuring qubit 1 of all sets
+    /// </summary>
+    /// <param name="qubits">Qubit array</param>
+    /// <returns>Object containing 8 qubits array and measurement result</returns>
+    public static ByteQubitsPair measureEightQubits(QubitSystem[] qubits)
+    {
+        int result = 0;
+        for (int i = 0; i < qubits.Length; i++)
+        {
+            int temp = qubits[i].measurement(1);
+            int multiplier = QubitSystem.intPow(2, qubits.Length - i - 1);
+            result += multiplier * temp;
+        }
+
+        ByteQubitsPair returned = new ByteQubitsPair();
+        returned.bits = result;
+        returned.qubits = qubits;
+
+        return returned;
+    }
+    /// <summary>
+    /// Sets up entanglement-swappable qubits.
+    /// </summary>
+    /// <returns>Qubit states</returns>
+    public static QubitSystem[] instantiateQubits()
+    {
+        QubitSystem[] returned = new QubitSystem[8];
+        for (int i = 0; i < 8; i++)
+        {
+            QubitSystem EntSwap = new QubitSystem(4);
+            EntSwap.applyGateToOneQubit(1, QubitModule.H);
+            EntSwap.applyGateToOneQubit(3, QubitModule.H);
+
+            EntSwap.applyCNOT(1);
+            EntSwap.applyCNOT(3);
+            EntSwap.applyCNOT(2);
+            EntSwap.applyGateToOneQubit(2, QubitModule.H);
+            EntSwap.applyGateToOneQubit(4, QubitModule.bellStateAnalyser
+                (EntSwap.measurement(2), EntSwap.measurement(3)));
+            returned[i] = EntSwap;
+
+        }
+
+        return returned;
+    }
+    #endregion
+}
+#endregion
+#region MessageObject
+public class MessageObject
+{
+    public uint messageID;
+    internal uint messageLength;
+    public char[] messageContents;
+    public bool messageFinishedStatus;
+    public string username;
+
+    /// <summary>
+    /// Only to be used once a MessageInitializer has been recieved
+    /// </summary>
+    /// <param name="messageID">Unique identifier for message</param>
+    /// <param name="messageLength">Length of message</param>
+    public MessageObject(int messageID, int messageLength, string username)
+    {
+        this.messageID = messageID;
+        this.messageLength = messageLength;
+        messageContents = new char[messageLength];
+        messageFinishedStatus = false;
+        this.username = username;
+    }
+}
+#endregion

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QMS.ViewModels;
 
 namespace QMS.QMSScripts;
 public class QgleAssistant
@@ -14,6 +15,7 @@ public class QgleAssistant
     private int lastStatementFromBot = -1;
     private string lastQuestionAskedByUser = "";
     private string lastResponse = "";
+    
 
     private static readonly Dictionary<int, string> QuestionsFromBot= new() { 
         { 0, "How can I help?"},
@@ -83,6 +85,7 @@ public class QgleAssistant
             //connecting user to another user
             lastQuestionAskedByBot = -1;
             bool tempResult = establishConnection(lastResponse);
+            KeyVarFunc.lastRequestedUsername = lastResponse;
             if (tempResult)
             {
                 //success
@@ -96,31 +99,7 @@ public class QgleAssistant
                 return (new List<string> { StatementFromBot[1] });
             }
         }
-        else if (lastQuestionAskedByBot == 2)
-        {
-            //connection initializer recieved
-            if (checkInList(yesSynonyms, lastResponse))
-            {
-                //user says yes
-                addUserToQueues(lastResponse);
-                lastStatementFromBot = 0;
-                lastQuestionAskedByBot = -1;
-                return (new List<string> { StatementFromBot[0] });
-            }
-            else if(checkInList(noSynonyms, lastResponse))
-            {
-                //user says no
-                lastStatementFromBot = 1;
-                lastQuestionAskedByBot = -1;
-                return (new List<string> { StatementFromBot[1] });
-            }
-            else
-            {
-                //incomprehensible
-                lastStatementFromBot = 3;
-                return new List<string>() { StatementFromBot[3] };
-            }
-        }
+
         else
         {
             //incomprehensible
@@ -151,12 +130,18 @@ public class QgleAssistant
         {
             //networking stuff lets say it works
             //ConnectionRequestHandler.RequestSend(username);
-            //addUserToQueues(username);
+
+            //only adds to list if already exists
+            MessageList? result = KeyVarFunc.queues.Find(delegate (MessageList ml)
+            {
+                return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+            });
+            if (result == null) { addUserToQueues(username); }
             return true;
         }
         catch
         {
-            //it doesnt work and program throws error (then doesn't break the app and moves on!
+            //it doesnt work and program throws error (then doesn't break the app and moves on!)
             return false;
         }
     }

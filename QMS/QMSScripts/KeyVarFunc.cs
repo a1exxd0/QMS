@@ -13,8 +13,9 @@ public class KeyVarFunc
     public static string? desiredRecipient {get; set; }
     public static bool correctRecipient = false; //unnecessary?
     //kill a connection (needs to be tested)
-    public static bool terminate = false;
+    //public static bool terminate = false;
     public static int messageIDCounter = 0;
+    public static string lastRequestedUsername = "";
 
     //container for messages
     public static List<MessageList> queues = new();
@@ -51,13 +52,13 @@ public class KeyVarFunc
 
 
 //needs to be placed in button
-public class TerminateButton
-{
-    public static void OnPress()
-    {
-        //on button click
-        KeyVarFunc.terminate = true;
-    }
-}
+//public class TerminateButton
+//{
+//    public static void OnPress()
+//    {
+//        //on button click
+//        KeyVarFunc.terminate = true;
+//    }
+//}
 
  
