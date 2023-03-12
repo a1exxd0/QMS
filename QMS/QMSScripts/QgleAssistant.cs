@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QMS.Networking;
+using QMS.ViewModels;
 
 namespace QMS.QMSScripts;
 public class QgleAssistant
@@ -15,9 +17,11 @@ public class QgleAssistant
     private string lastQuestionAskedByUser = "";
     private string lastResponse = "";
 
-    private static readonly Dictionary<int, string> QuestionsFromBot= new() { 
+
+    private static readonly Dictionary<int, string> QuestionsFromBot = new() {
         { 0, "How can I help?"},
-        {1, "Who would you like to connect to?" }
+        {1, "Who would you like to connect to?" },
+        {2, "... would like to connect. Do you accept? " } //placeholder text
     };
 
 
@@ -35,18 +39,21 @@ public class QgleAssistant
 
     public void updateLastResponse(string response)
     {
-        lastResponse=response;
+        lastResponse = response;
     }
 
+    public void forceResponse(int i)
+    {
 
+    }
     /// <summary>
     /// Make the bot ask Hey! How can I help?
     /// </summary>
     /// <returns></returns>
     public List<string> StartConversation()
     {
-        lastQuestionAskedByBot=0;
-        lastStatementFromBot=2;
+        lastQuestionAskedByBot = 0;
+        lastStatementFromBot = 2;
         return (new List<string> { StatementFromBot[2], QuestionsFromBot[0] });
     }
     /// <summary>
@@ -55,16 +62,18 @@ public class QgleAssistant
     /// <returns></returns>
     public List<string> InterpretText()
     {
-        List<string> connectSynonyms = new List<string>() { "connect", "establish", "talk"};
+        List<string> connectSynonyms = new List<string>() { "connect", "establish", "talk" };
         List<string> greetingSynonyms = new List<string>() { "hey", "hi", "hello", "greet", "speak" };
+        List<string> yesSynonyms = new List<string>() { "yes", "yeah", "indeed", "ok" };
+        List<string> noSynonyms = new List<string>() { "no", "nah" };
 
 
 
         if (checkInList(connectSynonyms, lastResponse) && lastQuestionAskedByBot != 1)
         {
             //if user wants to connect
-            lastQuestionAskedByBot=1;
-            return(new List<string>() { QuestionsFromBot[1] });
+            lastQuestionAskedByBot = 1;
+            return (new List<string>() { QuestionsFromBot[1] });
         }
         else if (checkInList(greetingSynonyms, lastResponse) && lastQuestionAskedByBot != 1)
         {
@@ -72,11 +81,12 @@ public class QgleAssistant
             lastStatementFromBot = 2;
             return (new List<string>() { StatementFromBot[2] });
         }
-        else if (lastQuestionAskedByBot== 1)
+        else if (lastQuestionAskedByBot == 1)
         {
             //connecting user to another user
             lastQuestionAskedByBot = -1;
             bool tempResult = establishConnection(lastResponse);
+            KeyVarFunc.lastRequestedUsername = lastResponse;
             if (tempResult)
             {
                 //success
@@ -90,6 +100,7 @@ public class QgleAssistant
                 return (new List<string> { StatementFromBot[1] });
             }
         }
+
         else
         {
             //incomprehensible
@@ -97,9 +108,10 @@ public class QgleAssistant
             return new List<string>() { StatementFromBot[3] };
         }
     }
+
     private bool checkInList(List<string> list, string s)
     {
-        for(var i = 0; i< list.Count; i++)
+        for (var i = 0; i < list.Count; i++)
         {
             if (s.ToLower().Contains(list[i]))
             {
@@ -118,14 +130,26 @@ public class QgleAssistant
         try
         {
             //networking stuff lets say it works
+            //ConnectionRequestHandler.RequestSend(username);
+            ConnectionEstablishment ce = new();
+            ce.RequestSend(username);
 
-            KeyVarFunc.queues.Add(new ViewModels.MessageList(username));
+            //only adds to list if already exists
+            MessageList? result = KeyVarFunc.queues.Find(delegate (MessageList ml)
+            {
+                return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+            });
+            if (result == null) { addUserToQueues(username); }
             return true;
         }
         catch
         {
-            //it doesnt work and program throws error (then doesn't break the app and moves on!
+            //it doesnt work and program throws error (then doesn't break the app and moves on!)
             return false;
         }
+    }
+    public void addUserToQueues(string username)
+    {
+        KeyVarFunc.queues.Add(new ViewModels.MessageList(username));
     }
 }

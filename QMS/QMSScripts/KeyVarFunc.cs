@@ -6,14 +6,25 @@ using QMS.ViewModels;
 public class KeyVarFunc
 {
     //username of person on application on this device
-    public static string? username { get; set; }
+    public static string? username
+    {
+        get; set;
+    }
     //username of person sending the CI to this device
-    public static string? senderUsername{ get; set; } // COULD THIS BE UNNECESSARY? ignore for now
+    public static string? senderUsername
+    {
+        get; set;
+    } // COULD THIS BE UNNECESSARY? ignore for now
     //username of the person wanted to be contacted! remember to update
-    public static string? desiredRecipient {get; set; }
+    public static string? desiredRecipient
+    {
+        get; set;
+    }
     public static bool correctRecipient = false; //unnecessary?
     //kill a connection (needs to be tested)
-    public static bool terminate = false;
+    //public static bool terminate = false;
+    public static int messageIDCounter = 0;
+    public static string lastRequestedUsername = "";
 
     //container for messages
     public static List<MessageList> queues = new();
@@ -24,7 +35,7 @@ public class KeyVarFunc
     {
         queues.Clear();
     }
-    
+
 
 
 
@@ -50,13 +61,12 @@ public class KeyVarFunc
 
 
 //needs to be placed in button
-public class TerminateButton
-{
-    public static void OnPress()
-    {
-        //on button click
-        KeyVarFunc.terminate = true;
-    }
-}
+//public class TerminateButton
+//{
+//    public static void OnPress()
+//    {
+//        //on button click
+//        KeyVarFunc.terminate = true;
+//    }
+//}
 
- 
