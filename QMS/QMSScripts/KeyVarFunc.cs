@@ -14,6 +14,7 @@ public class KeyVarFunc
     public static bool correctRecipient = false; //unnecessary?
     //kill a connection (needs to be tested)
     public static bool terminate = false;
+    public static int messageIDCounter = 0;
 
     //container for messages
     public static List<MessageList> queues = new();
