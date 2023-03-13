@@ -182,10 +182,10 @@ public class ClientFunctions
     //declarations for IP/Socket combinations for every class transferred over network
     Dictionary<string, IPEndPoint> socketMatcher = new()
     {
-        {"ConnectionInitializer", new(DatabaseOptions.ServerIP, 31050)},
-        {"MessageInitializer", new(DatabaseOptions.ServerIP, 31051)},
-        {"SenderCharacter", new(DatabaseOptions.ServerIP, 31052)},
-        {"SenderQubits", new(DatabaseOptions.ServerIP, 31053)}
+        {"QMS.Networking.ConnectionInitializer", new(DatabaseOptions.ServerIP, 31050)},
+        {"QMS.Networking.MessageInitializer", new(DatabaseOptions.ServerIP, 31051)},
+        {"QMS.Networking.SenderCharacter", new(DatabaseOptions.ServerIP, 31052)},
+        {"QMS.Networking.SenderQubits", new(DatabaseOptions.ServerIP, 31053)}
     };
     /// <summary>
     /// Sends object across network

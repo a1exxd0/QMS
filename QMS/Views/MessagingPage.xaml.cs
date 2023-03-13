@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.System;
 using QMS.Networking;
+using System.ComponentModel;
 
 namespace QMS.Views;
 
@@ -46,7 +47,7 @@ public sealed partial class MessagingPage : Page
         ce.FlagToAddNewRecipient += FlagToAddNewRecipientFunction;
         ce.FlagForSuccessfulRecipient += FlagForSuccessfulRecipientFunction;
         ce.FlagForUnsuccessfulRecipient += FlagForUnsuccessfulRecipientFunction;
-        pm.MessageComplete += MessageCompleteFunction;
+        
 
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
@@ -55,8 +56,10 @@ public sealed partial class MessagingPage : Page
         
         loadNewRecipient();
         InitiateQgleChat();
+        new Thread(() => {
+            pm.MessageComplete += MessageCompleteFunction;
+            pm.CheckForMessages(); }).Start();
         ce.StartListeningForConnections();
-        
         
 
     }
@@ -70,6 +73,7 @@ public sealed partial class MessagingPage : Page
         });
         if (result == null) { qg.addUserToQueues(e.username); }
         mh.StartListeningForMessages();
+        UpdateDropdowns();
 
     }
     private void FlagForSuccessfulRecipientFunction(object sender, EventArgsUsername e)
@@ -79,6 +83,7 @@ public sealed partial class MessagingPage : Page
             return ml.recieverUsername == e.username;
         })!.AddSystemMessage("Successfully connected!");
         mh.StartListeningForMessages();
+        
     }
     private void FlagForUnsuccessfulRecipientFunction(object sender, EventArgsUsername e)
     {
@@ -117,6 +122,8 @@ public sealed partial class MessagingPage : Page
         MessagingTopBorder.Visibility = Visibility.Collapsed;
         MessagingBottomBorder.Visibility = Visibility.Collapsed;
         ChatArea.Visibility = Visibility.Collapsed;
+        MessageList newList = new MessageList("Q-gle Assistant");
+        KeyVarFunc.queues.Add(newList);
     }
 
     private void LogoutPressed(object sender, RoutedEventArgs e)
@@ -179,7 +186,14 @@ public sealed partial class MessagingPage : Page
         }
         else
         {
-            cf.SendMessage(toBeSent);
+            try
+            {
+                cf.SendMessage(toBeSent);
+            }
+            catch
+            {
+
+            }
         }
 
     }
