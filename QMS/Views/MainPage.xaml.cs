@@ -161,8 +161,6 @@ public sealed partial class MainPage : Page
                     MainItems[i].Visibility = Visibility.Collapsed;
                 }
 
-                //ErrorBoxLogin.Text = "logged in as " + inputUsername;
-
                 return;
             }
             else
