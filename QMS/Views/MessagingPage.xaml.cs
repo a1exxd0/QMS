@@ -48,7 +48,6 @@ public sealed partial class MessagingPage : Page
         ce.FlagForUnsuccessfulRecipient += FlagForUnsuccessfulRecipientFunction;
         pm.MessageComplete += MessageCompleteFunction;
 
-
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
         MessageList newList = new MessageList("Q-gle Assistant");
@@ -76,6 +75,7 @@ public sealed partial class MessagingPage : Page
         if (result == null) { qg.addUserToQueues(e.username); }
         mh.StartListeningForMessages();
         UpdateDropdowns();
+
     }
     private void FlagForSuccessfulRecipientFunction(object sender, EventArgsUsername e)
     {
@@ -84,6 +84,7 @@ public sealed partial class MessagingPage : Page
             return ml.recieverUsername == e.username;
         })!.AddSystemMessage("Successfully connected!");
         mh.StartListeningForMessages();
+
     }
     private void FlagForUnsuccessfulRecipientFunction(object sender, EventArgsUsername e)
     {
@@ -350,6 +351,7 @@ public sealed partial class MessagingPage : Page
 
             RecipientNames.Items.Add(temp);
         }
+        
     }
     #endregion
 }
