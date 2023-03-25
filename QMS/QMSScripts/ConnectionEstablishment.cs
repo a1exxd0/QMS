@@ -48,7 +48,6 @@ public class ConnectionEstablishment
         ProcessCI processCI = new ProcessCI();
         processCI.MessageRecieved += processCI_MessageRecieved;
         processCI.RecieveCI();
-        //processCI.RecieveCI();
 
     }
     /// <summary>
