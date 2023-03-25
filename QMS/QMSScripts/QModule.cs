@@ -6,7 +6,8 @@ namespace QMS.QMSScripts;
 /// Simple class for complex numbers, used because System.Numerics.Complex
 /// is far too overloaded for what I want to use it for.
 /// </summary>
-[JsonObject]internal class Complex
+[JsonObject]
+internal class Complex
 {
     [JsonProperty]
     internal float RP; //real part
@@ -19,7 +20,8 @@ namespace QMS.QMSScripts;
     /// </summary>
     /// <param name="reals">Real part</param>
     /// <param name="imaginary">Imaginary part</param>
-    [JsonConstructor] internal Complex(float reals, float imaginary)
+    [JsonConstructor]
+    internal Complex(float reals, float imaginary)
     {
         RP = reals;
         IP = imaginary;
@@ -233,7 +235,8 @@ public class QubitModule
 /// Allows for troubleshooting through being able to see state
 /// vector unlike other quantum simulaton modules.Also compact and fast.
 /// </summary>
-[JsonObject] public class QubitSystem
+[JsonObject]
+public class QubitSystem
 {
     [JsonProperty]
     internal int numberOfQubits;

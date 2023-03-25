@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using QMS.Views;
 using global::QMS.QMSScripts;
-
+using QMS.ViewModels;
 
 namespace QMS.Networking;
 #region processing recieved messages
@@ -403,9 +403,16 @@ public class SideReciever
         var i = 0;
         foreach (var SQ in SenderQubitsList)
         {
-            if ((SQ.messageID == messageID) && (SQ.characterPosition == characterPosition))
+            try
             {
-                return i;
+                if ((SQ.messageID == messageID) && (SQ.characterPosition == characterPosition))
+                {
+                    return i;
+                }
+            }
+            catch
+            {
+
             }
             i++;
         }
@@ -505,6 +512,12 @@ public class ProcessMessage
                     //clear up clutter in data structures
                     SideReciever.messageIDQueue.Dequeue();
                     SideReciever.messageObjectList.RemoveAt(indexMessage);
+
+                    //KeyVarFunc.queues.Find(delegate (MessageList ml)
+                    //{
+                    //    return ml.recieverUsername == data.username;
+                    //})!.AddRecievedMessage(data.message);
+
                     OnComplete(data);
                 }
             }
