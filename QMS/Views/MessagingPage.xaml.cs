@@ -11,6 +11,10 @@ using QMS.ViewModels;
 using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using Windows.System;
+using QMS.Networking;
+using System.Threading;
+using System;
+using System.ComponentModel;
 
 namespace QMS.Views;
 
@@ -20,6 +24,11 @@ public sealed partial class MessagingPage : Page
     public EventHandler<RoutedEventArgs>? SendMessageRecieved;
     public EventHandler<KeyEventArgs>? EnterRecieved;
     public QgleAssistant qg = new();
+    public ProcessMessage pm = new();
+    public ConnectionEstablishment ce = new();
+    public ClientFunctions cf = new();
+    public MessageHandler mh = new();
+
 
     public MessagingViewModel ViewModel
     {
@@ -31,28 +40,83 @@ public sealed partial class MessagingPage : Page
         ViewModel = App.GetService<MessagingViewModel>();
         Resources.Add("LeftBorderWidth", 300);
         Resources.Add("TopBorderHeight", 180);
-        //Resources.Add("LeftBorderColour", "#C3C3C3");
-        //Resources.Add("PurpleColour", "#C293FF");
-        //Resources.Add("LightGrey", "#FFDCDCDE");
         Resources.Add("LeftBorderColour", "#b0e0e6");
         Resources.Add("PurpleColour", "#6495ED");
         Resources.Add("LightGrey", "#f0f8ff");
+
         LogoutPressedRecieved += LogoutPressedFunction;
         SendMessageRecieved += SendMessageFunction;
+        ce.FlagToAddNewRecipient += FlagToAddNewRecipientFunction;
+        ce.FlagForSuccessfulRecipient += FlagForSuccessfulRecipientFunction;
+        ce.FlagForUnsuccessfulRecipient += FlagForUnsuccessfulRecipientFunction;
+        pm.MessageComplete += MessageCompleteFunction;
 
         InitializeComponent();
         LoggedInAs.Text = "Logged in as\n" + KeyVarFunc.username;
         MessageList newList = new MessageList("Q-gle Assistant");
         KeyVarFunc.queues.Add(newList);
-        
+
         loadNewRecipient();
         InitiateQgleChat();
+        new Thread(() => { pm.CheckForMessages(); }).Start();
+        ce.StartListeningForConnections();
         
     }
+    private async void testFunction()
+    {
+        new Thread(() => { pm.CheckForMessages(); });
+        ce.StartListeningForConnections();
+
+    }
+    #region flags incoming messages
+    private void FlagToAddNewRecipientFunction(object sender, EventArgsUsername e)
+    {
+        MessageList? result = KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == KeyVarFunc.desiredRecipient;
+        });
+        if (result == null) { qg.addUserToQueues(e.username); }
+        mh.StartListeningForMessages();
+        UpdateDropdowns();
+    }
+    private void FlagForSuccessfulRecipientFunction(object sender, EventArgsUsername e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddSystemMessage("Successfully connected!");
+        mh.StartListeningForMessages();
+    }
+    private void FlagForUnsuccessfulRecipientFunction(object sender, EventArgsUsername e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddSystemMessage("Connection failed.");
+    }
+    private void MessageCompleteFunction(object sender, EventArgsMessage e)
+    {
+        KeyVarFunc.queues.Find(delegate (MessageList ml)
+        {
+            return ml.recieverUsername == e.username;
+        })!.AddRecievedMessage(e.message);
+        if (KeyVarFunc.currentEndUser == e.username)
+        {
+            UpdateSingleMessage();
+        }
+    }
+
+    #endregion
+
+    #region connection listeners
+
+    #endregion
+
+
     #region logout pressed functions
     private void LogoutPressedFunction(object sender, RoutedEventArgs e)
     {
-        
+
         frame.Navigate(typeof(MainPage));
         KeyVarFunc.username = "";
         KeyVarFunc.ClearQueue();
@@ -112,13 +176,25 @@ public sealed partial class MessagingPage : Page
         //IMPLEMENT NETWORK HERE
 
         //Local message add
-        
+
         addToQueue(toBeSent, 0);
         UpdateSingleMessage();
         TextToBeSent.Text = "";
         if (KeyVarFunc.currentEndUser == "Q-gle Assistant")
         {
             RecieveQgleMessage(toBeSent);
+        }
+        else
+        {
+            try
+            {
+                cf.SendMessage(toBeSent);
+            }
+            catch
+            {
+
+            }
+            
         }
 
     }
@@ -174,7 +250,7 @@ public sealed partial class MessagingPage : Page
         SolidColorBrush redBrush = new();
         redBrush.Color = Microsoft.UI.Colors.Red;
 
-        NameBox.Text= username;
+        NameBox.Text = username;
         ChatBox.Inlines.Clear();//resets textbox contents
         MessageList mList = KeyVarFunc.queues.Find(delegate (MessageList ml)
         {
@@ -274,6 +350,7 @@ public sealed partial class MessagingPage : Page
 
             RecipientNames.Items.Add(temp);
         }
+        
     }
     #endregion
 }
